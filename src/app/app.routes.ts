@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 
+// loadComponent is a custom property that we use to lazy load the component
+// loadChildren is a property that we use to lazy load the module
+// component is a property that we use to load the component
+
 export const routes: Routes = [
   {
     path: '',
