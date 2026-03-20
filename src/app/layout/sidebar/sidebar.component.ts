@@ -9,5 +9,9 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
+  expandedSection: 'requests' | 'orders' | 'users' | null = null;
 
+  toggleSection(section: 'requests' | 'orders' | 'users'): void {
+    this.expandedSection = this.expandedSection === section ? null : section;
+  }
 }

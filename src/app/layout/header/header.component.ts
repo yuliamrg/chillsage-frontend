@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -8,5 +8,19 @@ import { Component, input } from '@angular/core';
   styles: ``
 })
 export class HeaderComponent {
-  // @input() title: string = '';
+  isSearchOpen = false;
+  isSidebarCollapsed = false;
+
+  toggleSearch(): void {
+    this.isSearchOpen = !this.isSearchOpen;
+  }
+
+  closeSearch(): void {
+    this.isSearchOpen = false;
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    document.body.classList.toggle('sidebar-collapse', this.isSidebarCollapsed);
+  }
 }

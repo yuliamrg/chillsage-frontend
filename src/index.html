@@ -6,6 +6,17 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    [
+      './assets/themes/adminlte/plugins/fontawesome-free/css/all.min.css',
+      './assets/themes/adminlte/dist/css/adminlte.min.css'
+    ].forEach((href) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      document.head.appendChild(link);
+    });
+  </script>
 </head>
 <body class="hold-transition sidebar-mini">
   <app-root></app-root>

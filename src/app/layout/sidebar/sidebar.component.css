@@ -56,6 +56,10 @@
   padding: 10px 15px;
   display: flex;
   align-items: center;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
 }
 
 .nav-sidebar .nav-link.active {
@@ -78,8 +82,19 @@
   padding-left: 15px;
 }
 
-.nav-item.has-treeview:hover .nav-treeview {
+.nav-treeview-open {
   display: block;
+}
+
+.nav-toggle p {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.rotate-icon {
+  transform: rotate(-90deg);
 }
 
 .nav-treeview .nav-link {

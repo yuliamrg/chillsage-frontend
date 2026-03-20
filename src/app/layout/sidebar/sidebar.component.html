@@ -20,18 +20,16 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-              with font-awesome or any other icon font library -->
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+          <li class="nav-item" [class.menu-open]="expandedSection === 'requests'">
+            <button type="button" class="nav-link nav-toggle" (click)="toggleSection('requests')">
               <i class="nav-icon fas fa-file-import"></i>
               <p>
                 Solicitudes
-                <i class="right fas fa-angle-left"></i>
+                <i class="right fas fa-angle-left" [class.rotate-icon]="expandedSection === 'requests'"></i>
               </p>
-            </a>
-            <ul class="nav nav-treeview">
+            </button>
+            <ul class="nav nav-treeview" [class.nav-treeview-open]="expandedSection === 'requests'">
               <li class="nav-item">
                 <a routerLink="requests/list"  class="nav-link">
                   <i class="fas fa-angle-double-right nav-icon"></i>
@@ -46,15 +44,15 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+          <li class="nav-item" [class.menu-open]="expandedSection === 'orders'">
+            <button type="button" class="nav-link nav-toggle" (click)="toggleSection('orders')">
               <i class="nav-icon fas fa-layer-group"></i>
               <p>
                 Ordenes
-                <i class="fas fa-angle-left right"></i>
+                <i class="fas fa-angle-left right" [class.rotate-icon]="expandedSection === 'orders'"></i>
               </p>
-            </a>
-            <ul class="nav nav-treeview">
+            </button>
+            <ul class="nav nav-treeview" [class.nav-treeview-open]="expandedSection === 'orders'">
               <li class="nav-item">
                 <a routerLink="orders/list" class="nav-link">
                   <i class="fas fa-angle-double-right nav-icon"></i>
@@ -93,15 +91,15 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+          <li class="nav-item" [class.menu-open]="expandedSection === 'users'">
+            <button type="button" class="nav-link nav-toggle" (click)="toggleSection('users')">
               <i class="nav-icon fas fa-users"></i>
               <p>
                 Usuarios y Roles
-                <i class="fas fa-angle-left right"></i>
+                <i class="fas fa-angle-left right" [class.rotate-icon]="expandedSection === 'users'"></i>
               </p>
-            </a>
-            <ul class="nav nav-treeview">
+            </button>
+            <ul class="nav nav-treeview" [class.nav-treeview-open]="expandedSection === 'users'">
               <li class="nav-item">
                 <a routerLink="users/list" class="nav-link">
                   <i class="fas fa-angle-double-right nav-icon"></i>
@@ -115,7 +113,7 @@
                 </a>
               </li>
             </ul>
-          </li>f
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

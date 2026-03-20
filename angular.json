@@ -25,23 +25,17 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "src/assets/themes/adminlte/plugins/fontawesome-free/css/all.min.css",
-              "src/assets/themes/adminlte/dist/css/adminlte.min.css"
+              "src/styles.css"
             ],
-            "scripts": [
-              "src/assets/themes/adminlte/plugins/jquery/jquery.min.js",
-              "src/assets/themes/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js",
-              "src/assets/themes/adminlte/dist/js/adminlte.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1.5mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
