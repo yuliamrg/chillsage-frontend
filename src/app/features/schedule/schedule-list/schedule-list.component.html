@@ -1,391 +1,41 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1>Cronogramas</h1>
-        </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a routerLink="/dashboard">DashBoard</a></li>
-            <li class="breadcrumb-item active">Listado de cronogramas</li>
-          </ol>
-        </div>
+        <div class="col-sm-6"><h1>Cronogramas</h1></div>
       </div>
     </div>
-    <!-- /.container-fluid -->
   </section>
-
-  <!-- Main content -->
   <section class="content">
-    <!-- Default box -->
     <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Cronogramas</h3>
-
-        <div class="card-tools">
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="collapse"
-            title="Collapse"
-            style="display: none"
-          >
-            <i class="fas fa-minus"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="remove"
-            title="Remove"
-            style="display: none"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      </div>
       <div class="card-body p-0">
-
         <div class="m-2">
           <a routerLink="/schedule/new" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
         </div>
-
         <table class="table table-hover table-striped table-bordered table-sm">
           <thead>
             <tr>
-              <th style="width: 1%" class="text-center">ID</th>
-              <th style="width: 15%" class="text-center">Nombre</th>
-              <th style="width: 10%" class="text-center">Cliente</th>
-              <th style="width: 5%" class="text-center">Fecha Ejecucion</th>
-              <th style="width: 5%" class="text-center">Tipo</th>
-              <th style="width: 15%" class="text-center">Descripcion</th>
-              <th style="width: 5%" class="text-center">Estado</th>
-              <th style="width: 20%" class="text-center">Acciones</th>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripcion</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
+            <tr *ngFor="let schedule of schedules">
+              <td>{{ schedule.id }}</td>
+              <td>{{ schedule.name }}</td>
+              <td>{{ schedule.description || '-' }}</td>
+              <td>{{ schedule.status }}</td>
               <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td>
-                Mantenimiento preventivo Aire acondicionado
-              </td>
-              <td>
-                <a> Clinica de occidente </a>
-              </td>
-              <td>
-                2024-09-01 8:00:00
-              </td>
-              <td>
-                Preventivo
-              </td>
-              <td>
-                Mantenimiento preventivo a los aires acondicionados de la clinica de occidente
-              </td>
-              <td>
-                Pendiente
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/schedule/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/schedule/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
+                <a class="btn btn-info btn-sm mr-1" [routerLink]="['/schedule/detail', schedule.id]">Ver</a>
+                <a class="btn btn-warning btn-sm mr-1" [routerLink]="['/schedule/edit', schedule.id]">Editar</a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!-- /.card-body -->
     </div>
-    <!-- /.card -->
   </section>
-  <!-- /.content -->
 </div>

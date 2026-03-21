@@ -6,6 +6,6 @@ import { EquipmentEditComponent } from './equipment-edit/equipment-edit.componen
 export const EQUIPMENT_ROUTES: Routes = [
   { path: 'list', component: EquipmenListComponent },
   { path: 'new', component: EquipmentCreateComponent },
-  { path: 'detail', component: EquipmentDetailsComponent },
-  { path: 'edit', component: EquipmentEditComponent },
+  { path: 'detail/:id', component: EquipmentDetailsComponent },
+  { path: 'edit/:id', component: EquipmentEditComponent },
 ];

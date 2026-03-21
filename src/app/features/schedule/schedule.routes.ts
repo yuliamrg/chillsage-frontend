@@ -9,6 +9,6 @@ export const SCHEDULE_ROUTES: Routes = [
   { path: '', redirectTo: 'list', pathMatch: 'full' },
   { path: 'list', component: ScheduleListComponent },
   { path: 'new', component: ScheduleCreateComponent },
-  { path: 'edit', component: ScheduleEditComponent },
-  { path: 'detail', component: ScheduleDetailComponent },
+  { path: 'edit/:id', component: ScheduleEditComponent },
+  { path: 'detail/:id', component: ScheduleDetailComponent },
 ]

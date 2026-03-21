@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,94 +13,102 @@
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-      <!-- Main content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="card card-warning">
-            <div class="card-header">
-              <h3 class="card-title">Editar Equipo</h3>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-warning">
+        <div class="card-header">
+          <h3 class="card-title">Editar Equipo</h3>
+        </div>
+        <form (ngSubmit)="submit()">
+          <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+          <div class="row m-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" name="name" [(ngModel)]="form.name" required>
+              </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="row  m-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" value="Aire Acondicionado">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Marca</label>
-                    <input type="text" class="form-control" value="YSM">
-                  </div>
-                </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Marca</label>
+                <input type="text" class="form-control" name="brand" [(ngModel)]="form.brand">
               </div>
-              <div class="row  mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Modelo</label>
-                    <input type="text" class="form-control" value="York">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Serie</label>
-                    <input type="text" class="form-control" value="123456">
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Activo fijo</label>
-                    <input type="text" class="form-control" value="CDO123">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Cliente</label>
-                    <select class="form-control">
-                      <option value="1">Clinica de occidente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Ubicacion</label>
-                    <input type="text" class="form-control" value="Rayos X">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Observaciones</label>
-                    <textarea class="form-control" rows="3" value="lorem ipsum dolor sit amet consectetur adipisicing elit"></textarea>
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-12 text-center">
-                    <a routerLink="/equipment/list" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-warning ml-3">Guardar</button>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div><!-- /.container-fluid -->
-      </section>
-      <!-- /.content -->
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Modelo</label>
+                <input type="text" class="form-control" name="model" [(ngModel)]="form.model">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Serie</label>
+                <input type="text" class="form-control" name="serial" [(ngModel)]="form.serial" required>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Activo fijo</label>
+                <input type="text" class="form-control" name="fixedAssetCode" [(ngModel)]="form.fixedAssetCode" required>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Cliente</label>
+                <select class="form-control" name="clientId" [(ngModel)]="form.clientId">
+                  <option [ngValue]="null">Seleccione el cliente...</option>
+                  <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Ubicacion</label>
+                <input type="text" class="form-control" name="location" [(ngModel)]="form.location">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Observaciones</label>
+                <textarea class="form-control" rows="3" name="observations" [(ngModel)]="form.observations"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Tipo</label>
+                <input type="text" class="form-control" name="type" [(ngModel)]="form.type">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <select class="form-control" name="status" [(ngModel)]="form.status">
+                  <option value="active">Activo</option>
+                  <option value="inactive">Inactivo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <a routerLink="/equipment/list" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-warning ml-3">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
-

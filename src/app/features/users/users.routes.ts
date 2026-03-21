@@ -10,6 +10,6 @@ export const USERS_ROUTES: Routes = [
   { path: 'list', component: UsersListComponent },
   { path: 'roles', component: UsersRolesListComponent },
   { path: 'new', component: UsersCreateComponent },
-  { path: 'edit', component: UsersEditComponent },
-  { path: 'detail', component: UsersDetailComponent },
+  { path: 'edit/:id', component: UsersEditComponent },
+  { path: 'detail/:id', component: UsersDetailComponent },
 ];

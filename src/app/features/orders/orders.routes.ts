@@ -8,6 +8,6 @@ import { OrdersDetailComponent } from "./orders-detail/orders-detail.component"
 export const ORDERS_ROUTES: Routes = [
   { path: 'list', component: OrdersListComponent },
   { path: 'finished', component: FinishedOrdersComponent },
-  { path: 'edit', component: OrdersEditComponent },
-  { path: 'detail', component: OrdersDetailComponent },
+  { path: 'edit/:id', component: OrdersEditComponent },
+  { path: 'detail/:id', component: OrdersDetailComponent },
 ]

@@ -1,13 +1,22 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ScheduleVm } from '../../../core/models/domain.models';
+import { SchedulesService } from '../../../core/services/schedules.service';
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './schedule-list.component.html',
-  styles: ``
+  styles: ``,
 })
-export class ScheduleListComponent {
+export class ScheduleListComponent implements OnInit {
+  private readonly schedulesService = inject(SchedulesService);
 
+  schedules: ScheduleVm[] = [];
+
+  ngOnInit(): void {
+    this.schedulesService.getAll().subscribe((schedules) => (this.schedules = schedules));
+  }
 }

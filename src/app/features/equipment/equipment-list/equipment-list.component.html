@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,406 +13,65 @@
         </div>
       </div>
     </div>
-    <!-- /.container-fluid -->
   </section>
 
-  <!-- Main content -->
   <section class="content">
-    <!-- Default box -->
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Equipos</h3>
-
-        <div class="card-tools">
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="collapse"
-            title="Collapse"
-            style="display: none"
-          >
-            <i class="fas fa-minus"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="remove"
-            title="Remove"
-            style="display: none"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
       </div>
       <div class="card-body p-0">
-
         <div class="m-2">
           <a routerLink="/equipment/new" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
         </div>
 
+        <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+
         <table class="table table-hover table-striped table-bordered table-sm">
           <thead>
             <tr>
-              <th style="width: 1%" class="text-center">ID</th>
-              <th style="width: 20%" class="text-center">Nombre</th>
-              <th style="width: 10%" class="text-center">Marca</th>
-              <th style="width: 5%" class="text-center">Modelo</th>
-              <th style="width: 5%" class="text-center">Serie</th>
-              <th style="width: 10%" class="text-center">Activo fijo</th>
-              <th style="width: 15%" class="text-center">Cliente</th>
-              <th style="width: 15%" class="text-center">Ubicacion</th>
-              <th style="width: 19%" class="text-center">Acciones</th>
+              <th class="text-center">ID</th>
+              <th class="text-center">Nombre</th>
+              <th class="text-center">Marca</th>
+              <th class="text-center">Modelo</th>
+              <th class="text-center">Serie</th>
+              <th class="text-center">Activo fijo</th>
+              <th class="text-center">Cliente</th>
+              <th class="text-center">Ubicacion</th>
+              <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
+            <tr *ngFor="let equipment of equipments">
+              <td>{{ equipment.id }}</td>
+              <td>{{ equipment.name }}</td>
+              <td>{{ equipment.brand || '-' }}</td>
+              <td>{{ equipment.model || '-' }}</td>
+              <td>{{ equipment.serial }}</td>
+              <td>{{ equipment.fixedAssetCode }}</td>
+              <td>{{ equipment.clientName || '-' }}</td>
+              <td>{{ equipment.location || '-' }}</td>
               <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
+                <a class="btn btn-info btn-sm mr-1" [routerLink]="['/equipment/detail', equipment.id]">
+                  <i class="fas fa-eye"></i>
                   Ver
                 </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
+                <a class="btn btn-warning btn-sm mr-1" [routerLink]="['/equipment/edit', equipment.id]">
+                  <i class="far fa-edit"></i>
                   Editar
                 </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
+                <button class="btn btn-danger btn-sm" type="button" (click)="removeEquipment(equipment.id)">
+                  <i class="fas fa-trash-alt"></i>
                   Eliminar
-                </a>
+                </button>
               </td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td>
-                Aire Acondicionado
-              </td>
-              <td>
-                <a> York </a>
-              </td>
-              <td>
-                YSM
-              </td>
-              <td >
-                123456
-              </td>
-              <td>
-                CDO123
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                Rayos X
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/equipment/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/equipment/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/equipment/list">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
+            <tr *ngIf="!equipments.length">
+              <td colspan="9" class="text-center">No hay equipos registrados.</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!-- /.card-body -->
     </div>
-    <!-- /.card -->
   </section>
-  <!-- /.content -->
 </div>

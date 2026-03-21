@@ -1,106 +1,45 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1>Editar Solicitud</h1>
         </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item"><a routerLink="/requests/list">Listado de Solicitudes</a></li>
-            <li class="breadcrumb-item active">Editar Solicitud</li>
-          </ol>
-        </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-      <!-- Main content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="card card-warning">
-            <div class="card-header">
-              <h3 class="card-title">Editar Solicitud</h3>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-warning">
+        <div class="card-header">
+          <h3 class="card-title">Editar Solicitud</h3>
+        </div>
+        <form (ngSubmit)="submit()">
+          <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+          <div class="row m-1">
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label>Descripcion</label>
+                <textarea rows="3" class="form-control" name="description" [(ngModel)]="form.description" required></textarea>
+              </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="row  m-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Fecha de creacion</label>
-                    <input type="text" class="form-control" value="2024-10-01 8:00:00">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Solicitante</label>
-                    <input type="text" class="form-control" value="Yuliam Rivera" disabled>
-                  </div>
-                </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>Estado</label>
+                <select class="form-control" name="status" [(ngModel)]="form.status">
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="Aprobada">Aprobada</option>
+                  <option value="Anulada">Anulada</option>
+                </select>
               </div>
-              <div class="row  mx-1">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Descripcion</label>
-                    <input type="text" class="form-control" value="Se solicita reparacion del equipo, no enfría">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Equipo</label>
-                    <select class="form-control">
-                      <option value="1">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                      <option value="2">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                      <option value="5">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                      <option value="8">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Estado</label>
-                    <select class="form-control">
-                      <option value="1">Aprobada</option>
-                      <option value="1">Pendiente</option>
-                      <option value="1">Anulada</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Ubicacion</label>
-                    <input type="text" class="form-control" value="Rayos X">
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Observaciones</label>
-                    <input class="form-control" rows="3" value="ninguna">
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-12 text-center">
-                    <a routerLink="/requests/list" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-warning ml-3">Guardar</button>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div><!-- /.container-fluid -->
-      </section>
-      <!-- /.content -->
+          <div class="card-footer text-center">
+            <a routerLink="/requests/list" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-warning ml-3">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
-

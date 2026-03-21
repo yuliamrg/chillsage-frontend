@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,164 +13,35 @@
         </div>
       </div>
     </div>
-    <!-- /.container-fluid -->
   </section>
 
-  <!-- Main content -->
   <section class="content">
-    <!-- Default box -->
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Roles</h3>
-
-        <div class="card-tools">
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="collapse"
-            title="Collapse"
-            style="display: none"
-          >
-            <i class="fas fa-minus"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="remove"
-            title="Remove"
-            style="display: none"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
       </div>
       <div class="card-body p-0">
-
-        <div class="m-2">
-          <a href="#" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
-        </div>
-
         <table class="table table-hover table-striped table-bordered">
           <thead>
             <tr>
-              <th style="width: 1%" class="text-center">ID</th>
-              <th style="width: 15%" class="text-center">Nombre</th>
-              <th style="width: 15%" class="text-center">Descripcion</th>
-              <th style="width: 15%" class="text-center">permisos habilitados</th>
-              <th style="width: 20%" class="text-center">Acciones</th>
+              <th class="text-center">ID</th>
+              <th class="text-center">Nombre</th>
+              <th class="text-center">Descripcion</th>
+              <th class="text-center">Permisos habilitados</th>
+              <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>
-                Solicitante
-              </td>
-              <td>
-                Este rol realiza solicitudes
-              </td>
-              <td>
-                lisado de permisos
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" href="#">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" href="#">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>
-                Tecnico
-              </td>
-              <td>
-                Este rol ejecuta las ordenes asignadas
-              </td>
-              <td>
-                lisado de permisos
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" href="#">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" href="#">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>
-                Administrador de plataforma
-              </td>
-              <td>
-                Este rol administra la plataforma
-              </td>
-              <td>
-                lisado de permisos
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" href="#">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" href="#">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>
-                Planeador
-              </td>
-              <td>
-                Este rol administra solicitudes y genera cronogramas
-              </td>
-              <td>
-                lisado de permisos
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" href="#">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" href="#">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
+            <tr *ngFor="let role of roles">
+              <td>{{ role.id }}</td>
+              <td>{{ role.description }}</td>
+              <td>{{ role.description }}</td>
+              <td>No disponible</td>
+              <td class="text-center">Solo lectura</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!-- /.card-body -->
     </div>
-    <!-- /.card -->
   </section>
-  <!-- /.content -->
 </div>

@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,81 +13,75 @@
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-      <!-- Main content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="card card-info">
-            <div class="card-header">
-              <h3 class="card-title">Detalles</h3>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Detalles</h3>
+        </div>
+        <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <form *ngIf="user">
+          <div class="row m-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" class="form-control" [value]="user.username" disabled>
+              </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="row  m-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" value="Yuliam" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Apellido</label>
-                    <input type="text" class="form-control" value="Rivera" disabled>
-                  </div>
-                </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Email</label>
+                <input type="text" class="form-control" [value]="user.email" disabled>
               </div>
-              <div class="row  mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" class="form-control" value="yurivera@gmail.com" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Cliente</label>
-                    <select class="form-control" disabled>
-                      <option value="1">Clinica de occidente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Numero de contacto</label>
-                    <input type="text" class="form-control" placeholder=12345 disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <label>Rol</label>
-                  <select class="form-control" disabled>
-                    <option selected>Solicitante</option>
-                    <option value="1">Administrador</option>
-                    <option value="2">Tecnico</option>
-                    <option value="3">Planeador</option>
-                    <option value="4">Solicitante</option>
-                  </select>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-12 text-center">
-                    <a routerLink="/users/list" class="btn btn-secondary">Volver</a>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div><!-- /.container-fluid -->
-      </section>
-      <!-- /.content -->
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" [value]="user.firstName" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Apellido</label>
+                <input type="text" class="form-control" [value]="user.lastName" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" class="form-control" [value]="user.clientName || '-'" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Rol</label>
+                <input type="text" class="form-control" [value]="user.roleName || '-'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <input type="text" class="form-control" [value]="user.status || '-'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <a routerLink="/users/list" class="btn btn-secondary">Volver</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
-

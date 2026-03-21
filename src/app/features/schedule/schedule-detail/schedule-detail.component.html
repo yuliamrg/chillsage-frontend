@@ -1,110 +1,43 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1>Ver Cronograma</h1>
-        </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item"><a routerLink="/schedule/list">Listado de Cronogramas</a></li>
-            <li class="breadcrumb-item active">Detalles</li>
-          </ol>
-        </div>
+        <div class="col-sm-6"><h1>Ver Cronograma</h1></div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-      <!-- Main content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="card card-info">
-            <div class="card-header">
-              <h3 class="card-title">Detalles</h3>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-info" *ngIf="schedule">
+        <div class="card-header"><h3 class="card-title">Detalles</h3></div>
+        <form>
+          <div class="row m-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" [value]="schedule.name" disabled>
+              </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="row  m-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Fecha ejecucion</label>
-                    <input type="text" class="form-control" value="2024-09-01 8:00:00" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Tipo de Cronograma</label>
-                    <select name="" class="form-control" id="" disabled>
-                      <option value="2">Preventivo</option>
-                      <option value="1">Calibracion</option>
-                      <option value="5">Limpieza</option>
-                      <option value="8">Otros</option>
-                    </select>
-                  </div>
-                </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <input type="text" class="form-control" [value]="schedule.status" disabled>
               </div>
-              <div class="row  mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" value="Mantenimiento preventivo Aire acondicionado" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label>Cliente</label>
-                    <select class="form-control" disabled>
-                      <option selected>Clinica de occidente</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Estado</label>
-                    <input type="text" class="form-control" value="Pendiente" disabled>
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Descripcion</label>
-                    <input class="form-control" rows="3" value="Mantenimiento preventivo a los aires acondicionados de la clinica de occidente" disabled>
-                  </div>
-                </div>
-
-                <div class="col-sm-6">
-                  <!-- Select multiple-->
-                  <div class="form-group">
-                    <label>Agregar equipos</label>
-                    <select multiple class="form-control" disabled>
-                      <option value="1">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                      <option value="2">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                      <option value="5">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                      <option value="8">Aire Acondicionado, York, YSM, 123456, CDO123</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-12 text-center">
-                    <a routerLink="/schedule/list" class="btn btn-secondary">Volver</a>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div><!-- /.container-fluid -->
-      </section>
-      <!-- /.content -->
+          <div class="row mx-1">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Descripcion</label>
+                <textarea class="form-control" rows="3" [value]="schedule.description || '-'" disabled></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-center">
+            <a routerLink="/schedule/list" class="btn btn-secondary">Volver</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
-

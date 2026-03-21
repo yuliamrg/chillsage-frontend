@@ -10,6 +10,6 @@ export const REQUESTS_ROUTES: Routes = [
   { path: 'list', component: RequestsListComponent },
   { path: 'all', component: AllRequestsComponent },
   { path: 'new', component: RequestsCreateComponent },
-  { path: 'edit', component: RequestsEditComponent },
-  { path: 'detail', component: RequestsDetailComponent },
+  { path: 'edit/:id', component: RequestsEditComponent },
+  { path: 'detail/:id', component: RequestsDetailComponent },
 ];

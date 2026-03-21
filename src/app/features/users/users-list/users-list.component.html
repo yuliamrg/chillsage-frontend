@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,134 +13,65 @@
         </div>
       </div>
     </div>
-    <!-- /.container-fluid -->
   </section>
 
-  <!-- Main content -->
   <section class="content">
-    <!-- Default box -->
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Usuarios</h3>
-
-        <div class="card-tools">
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="collapse"
-            title="Collapse"
-            style="display: none"
-          >
-            <i class="fas fa-minus"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-tool"
-            data-card-widget="remove"
-            title="Remove"
-            style="display: none"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
       </div>
       <div class="card-body p-0">
-
         <div class="m-2">
           <a routerLink="/users/new" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
         </div>
 
+        <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+
         <table class="table table-hover table-striped table-bordered table-sm">
           <thead>
             <tr>
-              <th style="width: 1%" class="text-center">ID</th>
-              <th style="width: 10%" class="text-center">Nombre</th>
-              <th style="width: 10%" class="text-center">Apellidos</th>
-              <th style="width: 10%" class="text-center">Email</th>
-              <th style="width: 10%" class="text-center">Cliente</th>
-              <th style="width: 10%" class="text-center">Contacto</th>
-              <th style="width: 10%" class="text-center">Rol</th>
-              <th style="width: 20%" class="text-center">Acciones</th>
+              <th class="text-center">ID</th>
+              <th class="text-center">Usuario</th>
+              <th class="text-center">Nombre</th>
+              <th class="text-center">Apellidos</th>
+              <th class="text-center">Email</th>
+              <th class="text-center">Cliente</th>
+              <th class="text-center">Rol</th>
+              <th class="text-center">Estado</th>
+              <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>
-                Yuliam
-              </td>
-              <td>
-                Rivera
-              </td>
-              <td>
-                yurivera&#64;gmail.com
-              </td>
-              <td>
-                Clinica de occidente
-              </td>
-              <td>
-                12345
-              </td>
-              <td>
-                Solicitante
-              </td>
+            <tr *ngFor="let user of users">
+              <td>{{ user.id }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.firstName }}</td>
+              <td>{{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.clientName || '-' }}</td>
+              <td>{{ user.roleName || '-' }}</td>
+              <td>{{ user.status || '-' }}</td>
               <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="/users/detail">
-                  <i class="fas fa-eye"> </i>
+                <a class="btn btn-info btn-sm mr-1" [routerLink]="['/users/detail', user.id]">
+                  <i class="fas fa-eye"></i>
                   Ver
                 </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="/users/edit">
-                  <i class="far fa-edit"> </i>
+                <a class="btn btn-warning btn-sm mr-1" [routerLink]="['/users/edit', user.id]">
+                  <i class="far fa-edit"></i>
                   Editar
                 </a>
-                <a class="btn btn-danger btn-sm" routerLink="/users">
-                  <i class="fas fa-trash-alt"> </i>
+                <button class="btn btn-danger btn-sm" type="button" (click)="removeUser(user.id)">
+                  <i class="fas fa-trash-alt"></i>
                   Eliminar
-                </a>
+                </button>
               </td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>
-                Deyvis
-              </td>
-              <td>
-                Cruz
-              </td>
-              <td>
-                DeyvisCruz&#64;gmail.com
-              </td>
-              <td>
-                Refricool
-              </td>
-              <td>
-                54321
-              </td>
-              <td>
-                Tecnico
-              </td>
-              <td class="project-actions text-center">
-                <a class="btn btn-info btn-sm mr-1" routerLink="users/detail">
-                  <i class="fas fa-eye"> </i>
-                  Ver
-                </a>
-                <a class="btn btn-warning btn-sm mr-1" routerLink="users/edit">
-                  <i class="far fa-edit"> </i>
-                  Editar
-                </a>
-                <a class="btn btn-danger btn-sm" routerLink="/users">
-                  <i class="fas fa-trash-alt"> </i>
-                  Eliminar
-                </a>
-              </td>
+            <tr *ngIf="!users.length">
+              <td colspan="9" class="text-center">No hay usuarios registrados.</td>
             </tr>
-            <tr>
           </tbody>
         </table>
       </div>
-      <!-- /.card-body -->
     </div>
-    <!-- /.card -->
   </section>
-  <!-- /.content -->
 </div>

@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,93 +13,81 @@
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-      <!-- Main content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="card card-info">
-            <div class="card-header">
-              <h3 class="card-title">Detalles</h3>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Detalles</h3>
+        </div>
+        <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <form *ngIf="equipment">
+          <div class="row m-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" [value]="equipment.name" disabled>
+              </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="row  m-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" value="Aire Acondicionado" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Marca</label>
-                    <input type="text" class="form-control" value="YSM" disabled>
-                  </div>
-                </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Marca</label>
+                <input type="text" class="form-control" [value]="equipment.brand || '-'" disabled>
               </div>
-              <div class="row  mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Modelo</label>
-                    <input type="text" class="form-control" value="York" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Serie</label>
-                    <input type="text" class="form-control" value="123456" disabled>
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Activo fijo</label>
-                    <input type="text" class="form-control" value="CDO123" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Cliente</label>
-                    <select class="form-control" disabled>
-                      <option value="1">Clinica de occidente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Ubicacion</label>
-                    <input type="text" class="form-control" value="Rayos X" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Observaciones</label>
-                    <textarea class="form-control" rows="3" placeholder="lorem ipsum dolor sit amet consectetur adipisicing elit" disabled></textarea>
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-12 text-center">
-                    <a routerLink="/equipment/list" class="btn btn-secondary">Volver</a>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div><!-- /.container-fluid -->
-      </section>
-      <!-- /.content -->
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Modelo</label>
+                <input type="text" class="form-control" [value]="equipment.model || '-'" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Serie</label>
+                <input type="text" class="form-control" [value]="equipment.serial" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Activo fijo</label>
+                <input type="text" class="form-control" [value]="equipment.fixedAssetCode" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" class="form-control" [value]="equipment.clientName || '-'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Ubicacion</label>
+                <input type="text" class="form-control" [value]="equipment.location || '-'" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Observaciones</label>
+                <textarea class="form-control" rows="3" [value]="equipment.observations || '-'" disabled></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <a routerLink="/equipment/list" class="btn btn-secondary">Volver</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
-

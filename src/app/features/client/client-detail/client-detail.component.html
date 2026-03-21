@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,60 +13,67 @@
           </ol>
         </div>
       </div>
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
-      <!-- Main content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="card card-info">
-            <div class="card-header">
-              <h3 class="card-title">Detalles del Cliente</h3>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Detalles del Cliente</h3>
+        </div>
+        <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <form *ngIf="client">
+          <div class="row m-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" [value]="client.name" disabled>
+              </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="row  m-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" value="Clinica de occidente" disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>NIT</label>
-                    <input type="text" class="form-control" value="890450723" disabled>
-                  </div>
-                </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Telefono</label>
+                <input type="text" class="form-control" [value]="client.phone || '-'" disabled>
               </div>
-              <div class="row  mx-1">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Direccion</label>
-                    <input type="text" class="form-control" value="Calle 18 Norte # 5N-34 " disabled>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Correo</label>
-                    <input type="text" class="form-control" value="clinicadeoccidente.com" disabled>
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-12 text-center">
-                    <a routerLink="/client/list" class="btn btn-secondary">Volver</a>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div><!-- /.container-fluid -->
-      </section>
-      <!-- /.content -->
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Direccion</label>
+                <input type="text" class="form-control" [value]="client.address || '-'" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Correo</label>
+                <input type="text" class="form-control" [value]="client.email" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Descripcion</label>
+                <textarea class="form-control" rows="3" [value]="client.description || '-'" disabled></textarea>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <input type="text" class="form-control" [value]="client.status || '-'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <a routerLink="/client/list" class="btn btn-secondary">Volver</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
-
