@@ -1,25 +1,45 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
 export class ApiClientService {
   private readonly http = inject(HttpClient);
 
+  private normalizeError(error: unknown) {
+    const httpError = error as HttpErrorResponse;
+    const payload = httpError?.error;
+    const message =
+      payload?.msg ??
+      payload?.message ??
+      payload?.error ??
+      httpError?.message ??
+      'Ha ocurrido un error al procesar la solicitud.';
+
+    return throwError(() => ({
+      ...httpError,
+      error: {
+        ...(typeof payload === 'object' && payload !== null ? payload : {}),
+        msg: message,
+      },
+      message,
+    }));
+  }
+
   get<T>(path: string): Observable<T> {
-    return this.http.get<T>(`${API_BASE_URL}${path}`);
+    return this.http.get<T>(`${API_BASE_URL}${path}`).pipe(catchError((error) => this.normalizeError(error)));
   }
 
   post<T>(path: string, body: unknown): Observable<T> {
-    return this.http.post<T>(`${API_BASE_URL}${path}`, body);
+    return this.http.post<T>(`${API_BASE_URL}${path}`, body).pipe(catchError((error) => this.normalizeError(error)));
   }
 
   put<T>(path: string, body: unknown): Observable<T> {
-    return this.http.put<T>(`${API_BASE_URL}${path}`, body);
+    return this.http.put<T>(`${API_BASE_URL}${path}`, body).pipe(catchError((error) => this.normalizeError(error)));
   }
 
   delete<T>(path: string): Observable<T> {
-    return this.http.delete<T>(`${API_BASE_URL}${path}`);
+    return this.http.delete<T>(`${API_BASE_URL}${path}`).pipe(catchError((error) => this.normalizeError(error)));
   }
 }

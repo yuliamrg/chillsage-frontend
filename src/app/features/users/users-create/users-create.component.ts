@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { ClientVm, RoleVm, UserFormValue } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 import { RolesService } from '../../../core/services/roles.service';
@@ -23,6 +24,7 @@ export class UsersCreateComponent implements OnInit {
   clients: ClientVm[] = [];
   roles: RoleVm[] = [];
   errorMessage = '';
+  isSaving = false;
   form: UserFormValue = {
     username: '',
     firstName: '',
@@ -40,8 +42,15 @@ export class UsersCreateComponent implements OnInit {
   }
 
   submit(): void {
-    this.usersService.create(this.form).subscribe({
-      next: () => this.router.navigate(['/users/list']),
+    if (this.isSaving) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.isSaving = true;
+
+    this.usersService.create(this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({
+      next: () => void this.router.navigate(['/users/list']),
       error: (error) => {
         this.errorMessage = error?.error?.msg ?? error?.error?.message ?? error?.message ?? 'No fue posible crear el usuario.';
       },

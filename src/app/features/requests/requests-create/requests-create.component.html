@@ -36,7 +36,9 @@
           </div>
           <div class="card-footer text-center">
             <a routerLink="/requests/list" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-success ml-3">Guardar</button>
+            <button type="submit" class="btn btn-success ml-3" [disabled]="isSaving">
+              {{ isSaving ? 'Guardando...' : 'Guardar' }}
+            </button>
           </div>
         </form>
       </div>

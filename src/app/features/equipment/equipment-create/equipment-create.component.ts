@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { ClientVm, EquipmentFormValue } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
@@ -20,6 +21,7 @@ export class EquipmentCreateComponent implements OnInit {
 
   clients: ClientVm[] = [];
   errorMessage = '';
+  isSaving = false;
   form: EquipmentFormValue = {
     name: '',
     type: '',
@@ -39,8 +41,15 @@ export class EquipmentCreateComponent implements OnInit {
   }
 
   submit(): void {
-    this.equipmentsService.create(this.form).subscribe({
-      next: () => this.router.navigate(['/equipment/list']),
+    if (this.isSaving) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.isSaving = true;
+
+    this.equipmentsService.create(this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({
+      next: () => void this.router.navigate(['/equipment/list']),
       error: (error) => {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible crear el equipo.';
       },

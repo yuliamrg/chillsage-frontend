@@ -103,7 +103,9 @@
             <div class="row">
               <div class="col-sm-12 text-center">
                 <a routerLink="/equipment/list" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-success ml-3">Guardar</button>
+                <button type="submit" class="btn btn-success ml-3" [disabled]="isSaving">
+                  {{ isSaving ? 'Guardando...' : 'Guardar' }}
+                </button>
               </div>
             </div>
           </div>

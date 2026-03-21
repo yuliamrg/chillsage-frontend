@@ -51,6 +51,47 @@ http://localhost:4200/
 - `npm run watch`: compila en modo desarrollo con watch
 - `npm test`: ejecuta pruebas unitarias con Karma
 
+## Contrato Con Backend
+
+Este frontend consume el backend ubicado en:
+
+- `../chillsage-backend`
+
+Fuente de verdad del contrato:
+
+- `../chillsage-backend/FRONTEND_API_SERVICES.md`
+
+Reglas de desarrollo:
+
+- El frontend no define el contrato HTTP; lo consume desde backend.
+- Si backend cambia campos, llaves, endpoints o relaciones enriquecidas, el frontend debe actualizarse en el mismo trabajo.
+- Ningun cambio que consuma API se considera completo si solo compila frontend o solo compila backend.
+
+Archivos del frontend que deben revisarse cuando cambie el contrato:
+
+- `src/app/core/models/domain.models.ts`
+- `src/app/core/mappers/domain.mappers.ts`
+- `src/app/core/services/*.service.ts`
+- componentes de create, edit, detail y list del recurso afectado
+
+Checklist obligatoria por cambio de contrato:
+
+1. Revisar el endpoint y el payload vigentes en `../chillsage-backend`.
+2. Actualizar `domain.models.ts` si cambia el shape usado por la UI.
+3. Actualizar `domain.mappers.ts` si cambia el nombre de campos o aparecen/desaparecen campos.
+4. Actualizar el servicio del recurso si cambia la llave de respuesta o el endpoint.
+5. Ajustar formularios, tablas, detalles o filtros que lean o envien esos campos.
+6. Validar el flujo afectado y ejecutar `npm run build`.
+
+Ejemplo con `requests`:
+
+- si backend agrega `priority`, el frontend debe agregarlo en `RequestVm` y `RequestFormValue`,
+- mapearlo en `mapRequest` y `mapRequestFormToApi`,
+- ajustar `requests.service.ts` si cambia el contrato,
+- reflejarlo en formulario, detalle o tabla si aplica.
+
+Si el cambio no pasa por ese recorrido, backend y frontend quedan desincronizados aunque ambos levanten.
+
 ## Workflow de Git
 
 El flujo recomendado para ramas, commits y validaciones quedó documentado en:

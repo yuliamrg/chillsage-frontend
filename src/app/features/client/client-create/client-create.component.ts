@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { ClientFormValue } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 
@@ -25,10 +26,18 @@ export class ClientCreateComponent {
     status: 'active',
   };
   errorMessage = '';
+  isSaving = false;
 
   submit(): void {
-    this.clientsService.create(this.form).subscribe({
-      next: () => this.router.navigate(['/client/list']),
+    if (this.isSaving) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.isSaving = true;
+
+    this.clientsService.create(this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({
+      next: () => void this.router.navigate(['/client/list']),
       error: (error) => {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible crear el cliente.';
       },

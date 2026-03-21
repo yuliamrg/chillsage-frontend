@@ -11,6 +11,7 @@
       <div class="card card-success">
         <div class="card-header"><h3 class="card-title">Nuevo Cronograma</h3></div>
         <form (ngSubmit)="submit()">
+          <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
           <div class="row m-1">
             <div class="col-sm-6">
               <div class="form-group">
@@ -39,7 +40,9 @@
           </div>
           <div class="card-footer text-center">
             <a routerLink="/schedule/list" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-success ml-3">Guardar</button>
+            <button type="submit" class="btn btn-success ml-3" [disabled]="isSaving">
+              {{ isSaving ? 'Guardando...' : 'Guardar' }}
+            </button>
           </div>
         </form>
       </div>
