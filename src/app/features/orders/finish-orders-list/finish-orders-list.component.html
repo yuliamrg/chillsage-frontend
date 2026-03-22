@@ -22,8 +22,8 @@
             <tr *ngFor="let order of orders">
               <td>{{ order.id }}</td>
               <td>{{ order.requestSummary || order.requestId || '-' }}</td>
-              <td>{{ order.responsibleName || '-' }}</td>
-              <td>{{ order.hours ?? '-' }}</td>
+              <td>{{ order.assignedUserName || '-' }}</td>
+              <td>{{ order.workedHours ?? '-' }}</td>
             </tr>
           </tbody>
         </table>

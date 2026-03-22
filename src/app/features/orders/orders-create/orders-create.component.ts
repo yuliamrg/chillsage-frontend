@@ -9,20 +9,19 @@ import { RequestsService } from '../../../core/services/requests.service';
 import { UsersService } from '../../../core/services/users.service';
 
 @Component({
-  selector: 'app-orders-edit',
+  selector: 'app-orders-create',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './orders-edit.component.html',
+  templateUrl: './orders-create.component.html',
   styles: ``,
 })
-export class OrdersEditComponent implements OnInit {
+export class OrdersCreateComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly ordersService = inject(OrdersService);
-  private readonly usersService = inject(UsersService);
   private readonly requestsService = inject(RequestsService);
+  private readonly usersService = inject(UsersService);
 
-  orderId = 0;
   requests: RequestVm[] = [];
   technicians: UserVm[] = [];
   errorMessage = '';
@@ -37,26 +36,21 @@ export class OrdersEditComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.orderId = Number(this.route.snapshot.paramMap.get('id'));
+    const requestId = Number(this.route.snapshot.queryParamMap.get('requestId'));
+
     forkJoin({
-      order: this.ordersService.getById(this.orderId),
       requests: this.requestsService.getAll({ status: 'approved' }),
       users: this.usersService.getAll(),
     }).subscribe({
-      next: ({ order, requests, users }) => {
-        this.requests = requests;
+      next: ({ requests, users }) => {
+        this.requests = requests.filter((request) => !request.orderId);
         this.technicians = users.filter((user) => (user.roleName ?? '').toLowerCase() === 'tecnico' || user.roleId === 4);
-        this.form = {
-          requestId: order.requestId,
-          assignedUserId: order.assignedUserId,
-          plannedStartAt: order.plannedStartAt,
-          diagnosis: order.diagnosis ?? '',
-          closureNotes: order.closureNotes ?? '',
-          receivedSatisfaction: order.receivedSatisfaction,
-        };
+        if (requestId) {
+          this.form.requestId = requestId;
+        }
       },
       error: (error) => {
-        this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible cargar la orden.';
+        this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible cargar los datos de la orden.';
       },
     });
   }
@@ -66,11 +60,12 @@ export class OrdersEditComponent implements OnInit {
       return;
     }
 
+    this.errorMessage = '';
     this.isSaving = true;
-    this.ordersService.update(this.orderId, this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({
+    this.ordersService.create(this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({
       next: () => void this.router.navigate(['/orders/list']),
       error: (error) => {
-        this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible actualizar la orden.';
+        this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible crear la orden.';
       },
     });
   }

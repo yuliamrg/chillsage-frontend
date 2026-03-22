@@ -1,11 +1,29 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
 export class ApiClientService {
   private readonly http = inject(HttpClient);
+
+  private buildOptions(params?: Record<string, string | number | boolean | null | undefined>) {
+    if (!params) {
+      return {};
+    }
+
+    let httpParams = new HttpParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === null || value === undefined || value === '') {
+        return;
+      }
+
+      httpParams = httpParams.set(key, String(value));
+    });
+
+    return { params: httpParams };
+  }
 
   private normalizeError(error: unknown) {
     const httpError = error as HttpErrorResponse;
@@ -27,8 +45,10 @@ export class ApiClientService {
     }));
   }
 
-  get<T>(path: string): Observable<T> {
-    return this.http.get<T>(`${API_BASE_URL}${path}`).pipe(catchError((error) => this.normalizeError(error)));
+  get<T>(path: string, params?: Record<string, string | number | boolean | null | undefined>): Observable<T> {
+    return this.http
+      .get<T>(`${API_BASE_URL}${path}`, this.buildOptions(params))
+      .pipe(catchError((error) => this.normalizeError(error)));
   }
 
   post<T>(path: string, body: unknown): Observable<T> {

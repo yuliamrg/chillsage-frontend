@@ -12,7 +12,18 @@ export type AppResource =
   | 'orders'
   | 'schedules';
 
-export type AppAction = 'read' | 'create' | 'update' | 'delete';
+export type AppAction =
+  | 'read'
+  | 'create'
+  | 'update'
+  | 'delete'
+  | 'approve'
+  | 'cancel'
+  | 'assign'
+  | 'start'
+  | 'complete'
+  | 'open'
+  | 'close';
 
 export interface AuthUser extends UserVm {}
 

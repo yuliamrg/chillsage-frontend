@@ -4,61 +4,110 @@
       <div class="page-hero">
         <div>
           <h1 class="page-title">Solicitudes</h1>
-          <p class="page-subtitle">
-            Consulta, crea y administra solicitudes con una tabla mas clara y acciones mas visibles.
-          </p>
+          <p class="page-subtitle">Registro inicial de necesidades de servicio, con filtros y acciones operativas.</p>
         </div>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
-          <li class="breadcrumb-item active">Listado de solicitudes</li>
-        </ol>
       </div>
     </div>
   </section>
   <section class="content">
     <div class="container-fluid">
+      <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
       <div class="card">
-        <div class="toolbar-panel">
-          <div class="page-toolbar">
-            <span class="meta-chip">
-              <i class="fas fa-list-ul"></i>
-              Seguimiento operativo
-            </span>
+        <div class="card-header">
+          <div class="row">
+            <div class="col-md-2 form-group mb-0">
+              <label>Cliente</label>
+              <select class="form-control" [(ngModel)]="filters.clientId" name="clientId">
+                <option [ngValue]="null">Todos</option>
+                <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-2 form-group mb-0">
+              <label>Solicitante</label>
+              <select class="form-control" [(ngModel)]="filters.requesterUserId" name="requesterUserId">
+                <option [ngValue]="null">Todos</option>
+                <option *ngFor="let user of requesters" [ngValue]="user.id">{{ user.firstName }} {{ user.lastName }}</option>
+              </select>
+            </div>
+            <div class="col-md-2 form-group mb-0">
+              <label>Equipo</label>
+              <select class="form-control" [(ngModel)]="filters.equipmentId" name="equipmentId">
+                <option [ngValue]="null">Todos</option>
+                <option *ngFor="let equipment of equipments" [ngValue]="equipment.id">{{ equipment.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-2 form-group mb-0">
+              <label>Estado</label>
+              <select class="form-control" [(ngModel)]="filters.status" name="status">
+                <option [ngValue]="null">Todos</option>
+                <option value="pending">Pendiente</option>
+                <option value="approved">Aprobada</option>
+                <option value="cancelled">Anulada</option>
+              </select>
+            </div>
+            <div class="col-md-2 form-group mb-0">
+              <label>Tipo</label>
+              <select class="form-control" [(ngModel)]="filters.type" name="type">
+                <option [ngValue]="null">Todos</option>
+                <option value="corrective">Correctivo</option>
+                <option value="preventive">Preventivo</option>
+                <option value="inspection">Inspeccion</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end justify-content-end">
+              <button type="button" class="btn btn-primary mr-2" (click)="loadRequests()">Filtrar</button>
+              <button type="button" class="btn btn-default" (click)="clearFilters()">Limpiar</button>
+            </div>
           </div>
-          <a routerLink="/requests/new" class="btn btn-success btn-md" *ngIf="canCreateRequests()">
-            <i class="fas fa-plus-circle mr-1"></i>
-            Nueva solicitud
-          </a>
+          <div class="row mt-2">
+            <div class="col-md-2 form-group mb-0">
+              <label>Desde</label>
+              <input type="date" class="form-control" [(ngModel)]="filters.dateFrom" name="dateFrom">
+            </div>
+            <div class="col-md-2 form-group mb-0">
+              <label>Hasta</label>
+              <input type="date" class="form-control" [(ngModel)]="filters.dateTo" name="dateTo">
+            </div>
+            <div class="col-md-8 d-flex align-items-end justify-content-end">
+              <a routerLink="/requests/new" class="btn btn-success" *ngIf="canCreateRequests()">Nueva solicitud</a>
+            </div>
+          </div>
         </div>
         <div class="card-body pt-0">
-          <div class="alert alert-danger mb-3" *ngIf="errorMessage">{{ errorMessage }}</div>
-          <div class="table-shell">
+          <div class="table-responsive">
             <table class="table table-hover table-striped table-bordered table-sm">
               <thead>
                 <tr>
-                  <th class="text-center">ID</th>
-                  <th>Descripcion</th>
-                  <th class="text-center">Estado</th>
-                  <th class="text-center">Fecha de creacion</th>
-                  <th class="text-center">Acciones</th>
+                  <th>ID</th>
+                  <th>Titulo</th>
+                  <th>Cliente</th>
+                  <th>Equipo</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th>Orden</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let request of requests">
-                  <td class="text-center">{{ request.id }}</td>
-                  <td>{{ request.description }}</td>
-                  <td class="text-center">{{ request.status }}</td>
-                  <td class="text-center">{{ request.createdAt || '-' }}</td>
-                  <td class="project-actions text-center">
-                    <div class="table-actions">
-                      <a class="btn btn-info btn-sm" [routerLink]="['/requests/detail', request.id]">Ver</a>
-                      <a class="btn btn-warning btn-sm" *ngIf="canUpdateRequests()" [routerLink]="['/requests/edit', request.id]">Editar</a>
-                      <button class="btn btn-danger btn-sm" *ngIf="canDeleteRequests()" type="button" (click)="removeRequest(request.id)">Eliminar</button>
-                    </div>
+                  <td>{{ request.id }}</td>
+                  <td>{{ request.title }}</td>
+                  <td>{{ request.clientName || '-' }}</td>
+                  <td>{{ request.equipmentName || '-' }}</td>
+                  <td>{{ request.priority || '-' }}</td>
+                  <td>{{ formatStatus(request.status) }}</td>
+                  <td>{{ request.orderId || '-' }}</td>
+                  <td>
+                    <a class="btn btn-info btn-sm mr-1" [routerLink]="['/requests/detail', request.id]">Ver</a>
+                    <a class="btn btn-warning btn-sm mr-1" *ngIf="canUpdateRequests()" [routerLink]="['/requests/edit', request.id]">Editar</a>
+                    <a class="btn btn-primary btn-sm mr-1" *ngIf="request.status === 'approved' && !request.orderId && authService.canAccess('orders', 'create')" [routerLink]="['/orders/new']" [queryParams]="{ requestId: request.id }">Crear orden</a>
+                    <button type="button" class="btn btn-success btn-sm mr-1" *ngIf="request.status === 'pending' && canApproveRequests()" (click)="approveRequest(request)">Aprobar</button>
+                    <button type="button" class="btn btn-danger btn-sm mr-1" *ngIf="request.status === 'pending' && canCancelRequests()" (click)="cancelRequest(request)">Anular</button>
+                    <button type="button" class="btn btn-outline-danger btn-sm" *ngIf="canDeleteRequests()" (click)="removeRequest(request.id)">Eliminar</button>
                   </td>
                 </tr>
                 <tr *ngIf="!requests.length">
-                  <td colspan="5" class="table-empty">No hay solicitudes registradas.</td>
+                  <td colspan="8" class="text-center">No hay solicitudes registradas.</td>
                 </tr>
               </tbody>
             </table>

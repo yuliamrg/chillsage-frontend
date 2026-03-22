@@ -16,8 +16,8 @@ export class FinishedOrdersComponent implements OnInit {
   orders: OrderVm[] = [];
 
   ngOnInit(): void {
-    this.ordersService.getAll().subscribe((orders) => {
-      this.orders = orders.filter((order) => order.status?.toLowerCase() === 'terminada');
+    this.ordersService.getAll({ status: 'completed' }).subscribe((orders) => {
+      this.orders = orders;
     });
   }
 }

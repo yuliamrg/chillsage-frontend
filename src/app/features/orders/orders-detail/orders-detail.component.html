@@ -2,55 +2,47 @@
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6"><h1>Ver Orden</h1></div>
+        <div class="col-sm-6"><h1>Detalle de orden</h1></div>
       </div>
     </div>
   </section>
   <section class="content">
     <div class="container-fluid">
+      <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
       <div class="card card-info" *ngIf="order">
-        <div class="card-header"><h3 class="card-title">Detalles</h3></div>
-        <form>
-          <div class="row m-1">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Solicitud</label>
-                <input type="text" class="form-control" [value]="order.requestSummary || order.requestId || '-'" disabled>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Responsable</label>
-                <input type="text" class="form-control" [value]="order.responsibleName || '-'" disabled>
-              </div>
-            </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-title">Orden #{{ order.id }}</h3>
+          <div>
+            <button type="button" class="btn btn-primary btn-sm mr-2" *ngIf="order.status === 'assigned' && authService.canAccess('orders', 'start')" (click)="startOrder()">Iniciar</button>
+            <button type="button" class="btn btn-success btn-sm mr-2" *ngIf="order.status === 'in_progress' && authService.canAccess('orders', 'complete')" (click)="completeOrder()">Completar</button>
+            <button type="button" class="btn btn-danger btn-sm" *ngIf="order.status !== 'completed' && authService.canAccess('orders', 'cancel')" (click)="cancelOrder()">Anular</button>
           </div>
-          <div class="row mx-1">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Estado</label>
-                <input type="text" class="form-control" [value]="order.status" disabled>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Horas</label>
-                <input type="text" class="form-control" [value]="order.hours ?? '-'" disabled>
-              </div>
-            </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4"><strong>Estado:</strong> {{ formatStatus(order.status) }}</div>
+            <div class="col-md-4"><strong>Tipo:</strong> {{ order.type || '-' }}</div>
+            <div class="col-md-4"><strong>Solicitud:</strong> {{ order.requestSummary || order.requestId || '-' }}</div>
           </div>
-          <div class="row mx-1">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label>Descripcion</label>
-                <textarea class="form-control" rows="3" [value]="order.description || '-'" disabled></textarea>
-              </div>
-            </div>
+          <div class="row mt-2">
+            <div class="col-md-4"><strong>Cliente:</strong> {{ order.clientName || '-' }}</div>
+            <div class="col-md-4"><strong>Equipo:</strong> {{ order.equipmentName || '-' }}</div>
+            <div class="col-md-4"><strong>Tecnico:</strong> {{ order.assignedUserName || order.assignedUserId || '-' }}</div>
           </div>
-          <div class="card-footer text-center">
-            <a routerLink="/orders/list" class="btn btn-secondary">Volver</a>
+          <div class="row mt-2">
+            <div class="col-md-4"><strong>Planeada:</strong> {{ order.plannedStartAt || '-' }}</div>
+            <div class="col-md-4"><strong>Inicio:</strong> {{ order.startedAt || '-' }}</div>
+            <div class="col-md-4"><strong>Fin:</strong> {{ order.finishedAt || '-' }}</div>
           </div>
-        </form>
+          <div class="mt-3"><strong>Diagnostico</strong><p class="mb-0">{{ order.diagnosis || '-' }}</p></div>
+          <div class="mt-3"><strong>Trabajo realizado</strong><p class="mb-0">{{ order.workDescription || '-' }}</p></div>
+          <div class="mt-3"><strong>Notas de cierre</strong><p class="mb-0">{{ order.closureNotes || '-' }}</p></div>
+          <div class="mt-3" *ngIf="order.cancelReason"><strong>Motivo de anulacion</strong><p class="mb-0">{{ order.cancelReason }}</p></div>
+        </div>
+        <div class="card-footer text-center">
+          <a routerLink="/orders/list" class="btn btn-secondary">Volver</a>
+          <a class="btn btn-outline-primary ml-2" *ngIf="order.requestId" [routerLink]="['/requests/detail', order.requestId]">Ver solicitud</a>
+        </div>
       </div>
     </div>
   </section>

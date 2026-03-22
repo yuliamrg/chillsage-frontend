@@ -1,49 +1,32 @@
 <div class="content-wrapper">
-  <section class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6"><h1>Crear Cronograma</h1></div>
-      </div>
-    </div>
-  </section>
+  <section class="content-header"><div class="container-fluid"><div class="row mb-2"><div class="col-sm-6"><h1>Crear cronograma</h1></div></div></div></section>
   <section class="content">
     <div class="container-fluid">
       <div class="card card-success">
-        <div class="card-header"><h3 class="card-title">Nuevo Cronograma</h3></div>
+        <div class="card-header"><h3 class="card-title">Nuevo cronograma</h3></div>
         <form (ngSubmit)="submit()">
-          <div class="alert alert-danger m-2" *ngIf="errorMessage">{{ errorMessage }}</div>
-          <div class="row m-1">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Nombre</label>
-                <input type="text" class="form-control" name="name" [(ngModel)]="form.name" required>
-              </div>
+          <div class="alert alert-danger m-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6 form-group"><label>Cliente</label><select class="form-control" name="clientId" [(ngModel)]="form.clientId" (ngModelChange)="onClientChange()" required><option [ngValue]="null">Seleccione</option><option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option></select></div>
+              <div class="col-md-6 form-group"><label>Nombre</label><input class="form-control" name="name" [(ngModel)]="form.name" required></div>
             </div>
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Estado</label>
-                <select class="form-control" name="status" [(ngModel)]="form.status">
-                  <option value="Pendiente">Pendiente</option>
-                  <option value="Aprobada">Aprobada</option>
-                  <option value="Anulada">Anulada</option>
-                </select>
-              </div>
+            <div class="row">
+              <div class="col-md-6 form-group"><label>Tipo</label><select class="form-control" name="type" [(ngModel)]="form.type"><option value="preventive">Preventivo</option><option value="inspection">Inspeccion</option><option value="corrective">Correctivo</option></select></div>
+              <div class="col-md-6 form-group"><label>Fecha programada</label><input type="datetime-local" class="form-control" name="scheduledDate" [(ngModel)]="form.scheduledDate" required></div>
             </div>
-          </div>
-          <div class="row mx-1">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label>Descripcion</label>
-                <textarea class="form-control" rows="3" name="description" [(ngModel)]="form.description"></textarea>
+            <div class="form-group"><label>Descripcion</label><textarea class="form-control" rows="3" name="description" [(ngModel)]="form.description"></textarea></div>
+            <div class="form-group">
+              <label>Equipos asociados</label>
+              <div class="border rounded p-2" style="max-height: 220px; overflow: auto;">
+                <div class="form-check" *ngFor="let equipment of filteredEquipments">
+                  <input class="form-check-input" type="checkbox" [checked]="form.equipmentIds.includes(equipment.id)" (change)="toggleEquipment(equipment.id)" [id]="'equipment-' + equipment.id">
+                  <label class="form-check-label" [for]="'equipment-' + equipment.id">{{ equipment.name }} {{ equipment.fixedAssetCode ? '(' + equipment.fixedAssetCode + ')' : '' }}</label>
+                </div>
               </div>
             </div>
           </div>
-          <div class="card-footer text-center">
-            <a routerLink="/schedule/list" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-success ml-3" [disabled]="isSaving">
-              {{ isSaving ? 'Guardando...' : 'Guardar' }}
-            </button>
-          </div>
+          <div class="card-footer text-center"><a routerLink="/schedule/list" class="btn btn-secondary">Cancelar</a><button type="submit" class="btn btn-success ml-3" [disabled]="isSaving">{{ isSaving ? 'Guardando...' : 'Crear cronograma' }}</button></div>
         </form>
       </div>
     </div>

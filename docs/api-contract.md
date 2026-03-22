@@ -82,8 +82,8 @@ Roles reconocidos por id o nombre:
 Matriz de permisos aplicada en UI y rutas:
 
 - `admin`: CRUD total sobre todos los recursos
-- `planeador`: CRUD en `clients`, `equipments`, `requests`, `orders`, `schedules`; lectura en `users`, `roles`, `profiles`
-- `tecnico`: lectura en `clients`, `equipments`, `requests`, `orders`, `schedules`
+- `planeador`: lectura en `users`, `roles`, `profiles`; CRUD en `clients` y `equipments`; operacion completa sin `delete` en `requests`, `orders` y `schedules`
+- `tecnico`: lectura en `clients`, `equipments`, `requests`, `orders`, `schedules`; ejecucion de `orders.start` y `orders.complete`
 - `solicitante`: lectura en `requests` y `orders`; creacion en `requests`
 
 Recursos modelados en frontend:
@@ -103,6 +103,13 @@ Acciones modeladas:
 - `create`
 - `update`
 - `delete`
+- `approve`
+- `cancel`
+- `assign`
+- `start`
+- `complete`
+- `open`
+- `close`
 
 ## Rutas frontend relacionadas con auth
 
@@ -135,14 +142,38 @@ Cada cambio de contrato debe revisarse al menos en:
 - `src/app/core/auth/` si el cambio afecta login, token o autorizacion
 - componentes `list`, `detail`, `new`, `edit` del feature afectado
 
+## Estado operativo implementado en frontend
+
+El frontend ya consume el contrato operativo nuevo de:
+
+- `requests`
+- `orders`
+- `schedules`
+
+Para `schedules`, la implementacion actual sigue estas reglas del backend:
+
+- recurso: `GET /schedules`, `GET /schedules/:id`, `POST /schedules`, `PUT /schedules/:id`, `POST /schedules/:id/open`, `POST /schedules/:id/close`, `DELETE /schedules/:id`
+- filtros soportados: `client_id`, `status`, `type`, `date_from`, `date_to`
+- estados validos: `unassigned`, `open`, `closed`
+- `open` y `close` se consumen con body vacio
+- create/update envian `client_id`, `name`, `type`, `scheduled_date`, `description`, `equipment_ids`
+- la UI valida que exista al menos un equipo y limpia equipos incompatibles al cambiar de cliente
+- la UI oculta `Editar` para cronogramas `closed`, `Abrir` para estados distintos de `unassigned` y `Cerrar` para estados distintos de `open`
+
+Notas practicas de integracion:
+
+- el backend es la fuente de verdad para reglas de negocio; el frontend replica solo validaciones de UX de bajo costo
+- cuando el backend cambie estados, payloads o acciones de `schedules`, deben actualizarse en el mismo cambio `domain.models.ts`, `domain.mappers.ts`, `schedules.service.ts` y pantallas de `schedule`
+
 ## Checklist de sincronizacion con backend
 
 1. Revisar endpoint, payload y codigos de error vigentes en `../chillsage-backend`.
-2. Actualizar modelos y mappers si cambia el shape de datos.
-3. Ajustar servicios o wrappers API si cambia endpoint, metodo o envoltura de respuesta.
-4. Ajustar guards, permisos o UI si cambia el esquema de auth/autorizacion.
-5. Actualizar pruebas afectadas.
-6. Ejecutar:
+2. Contrastar ese contrato contra `docs/api-contract.md` y actualizar este archivo si quedo desfasado.
+3. Actualizar modelos y mappers si cambia el shape de datos.
+4. Ajustar servicios o wrappers API si cambia endpoint, metodo o envoltura de respuesta.
+5. Ajustar guards, permisos o UI si cambia el esquema de auth/autorizacion.
+6. Actualizar pruebas afectadas.
+7. Ejecutar:
 
 ```bash
 npm test -- --watch=false --browsers=ChromeHeadless

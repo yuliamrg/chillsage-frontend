@@ -5,6 +5,13 @@ type ResourcePermissions = Partial<Record<AppResource, AppAction[]>>;
 const fullCrud: AppAction[] = ['read', 'create', 'update', 'delete'];
 const readOnly: AppAction[] = ['read'];
 const requestCreateRead: AppAction[] = ['read', 'create'];
+const requestManagement: AppAction[] = ['read', 'create', 'update', 'approve', 'cancel'];
+const orderManagement: AppAction[] = ['read', 'create', 'update', 'assign', 'cancel'];
+const scheduleManagement: AppAction[] = ['read', 'create', 'update', 'open', 'close'];
+const fullRequests: AppAction[] = [...requestManagement, 'delete'];
+const fullOrders: AppAction[] = [...orderManagement, 'start', 'complete', 'delete'];
+const fullSchedules: AppAction[] = [...scheduleManagement, 'delete'];
+const technicianOrders: AppAction[] = ['read', 'start', 'complete'];
 
 const rolePermissions: Record<AppRole, ResourcePermissions> = {
   admin: {
@@ -13,9 +20,9 @@ const rolePermissions: Record<AppRole, ResourcePermissions> = {
     profiles: fullCrud,
     clients: fullCrud,
     equipments: fullCrud,
-    requests: fullCrud,
-    orders: fullCrud,
-    schedules: fullCrud,
+    requests: fullRequests,
+    orders: fullOrders,
+    schedules: fullSchedules,
   },
   planeador: {
     users: readOnly,
@@ -23,15 +30,15 @@ const rolePermissions: Record<AppRole, ResourcePermissions> = {
     profiles: readOnly,
     clients: fullCrud,
     equipments: fullCrud,
-    requests: fullCrud,
-    orders: fullCrud,
-    schedules: fullCrud,
+    requests: requestManagement,
+    orders: [...orderManagement, 'start', 'complete'],
+    schedules: scheduleManagement,
   },
   tecnico: {
     clients: readOnly,
     equipments: readOnly,
     requests: readOnly,
-    orders: readOnly,
+    orders: technicianOrders,
     schedules: readOnly,
   },
   solicitante: {
