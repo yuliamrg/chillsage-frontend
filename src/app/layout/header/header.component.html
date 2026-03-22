@@ -34,5 +34,14 @@
         </form>
       </div>
     </li>
+    <li class="nav-item d-flex align-items-center ml-2" *ngIf="authService.user() as user">
+      <span class="text-muted small mr-3">
+        {{ user.firstName || user.username }}
+        <span *ngIf="user.roleName">· {{ user.roleName }}</span>
+      </span>
+      <button class="btn btn-outline-secondary btn-sm" type="button" (click)="logout()">
+        Salir
+      </button>
+    </li>
   </ul>
 </nav>

@@ -21,7 +21,7 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-          <li class="nav-item" [class.menu-open]="expandedSection === 'requests'">
+          <li class="nav-item" [class.menu-open]="expandedSection === 'requests'" *ngIf="canRead('requests')">
             <button type="button" class="nav-link nav-toggle" (click)="toggleSection('requests')">
               <i class="nav-icon fas fa-file-import"></i>
               <p>
@@ -44,7 +44,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item" [class.menu-open]="expandedSection === 'orders'">
+          <li class="nav-item" [class.menu-open]="expandedSection === 'orders'" *ngIf="canRead('orders')">
             <button type="button" class="nav-link nav-toggle" (click)="toggleSection('orders')">
               <i class="nav-icon fas fa-layer-group"></i>
               <p>
@@ -67,7 +67,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="canRead('schedules')">
             <a routerLink="schedule" class="nav-link">
               <i class="nav-icon far fa-calendar"></i>
               <p>
@@ -75,7 +75,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="canRead('equipments')">
             <a routerLink="equipment/list" class="nav-link">
               <i class="nav-icon fas fa-hdd"></i>
               <p>
@@ -83,7 +83,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="canRead('clients')">
             <a routerLink="client/list" class="nav-link">
               <i class="nav-icon fas fa-building"></i>
               <p>
@@ -91,7 +91,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item" [class.menu-open]="expandedSection === 'users'">
+          <li class="nav-item" [class.menu-open]="expandedSection === 'users'" *ngIf="canRead('users') || canRead('roles')">
             <button type="button" class="nav-link nav-toggle" (click)="toggleSection('users')">
               <i class="nav-icon fas fa-users"></i>
               <p>
@@ -100,13 +100,13 @@
               </p>
             </button>
             <ul class="nav nav-treeview" [class.nav-treeview-open]="expandedSection === 'users'">
-              <li class="nav-item">
+              <li class="nav-item" *ngIf="canRead('users')">
                 <a routerLink="users/list" class="nav-link">
                   <i class="fas fa-angle-double-right nav-icon"></i>
                   <p>Usuarios</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" *ngIf="canRead('roles')">
                 <a routerLink="users/roles" class="nav-link">
                   <i class="fas fa-angle-double-right nav-icon"></i>
                   <p>Roles</p>

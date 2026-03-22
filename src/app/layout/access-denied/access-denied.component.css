@@ -1,0 +1,20 @@
+.access-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e9eef5 0%, #cfd8e6 100%);
+}
+
+.access-box {
+  width: min(420px, calc(100vw - 2rem));
+}
+
+.access-title {
+  margin-bottom: 0.75rem;
+  font-size: 1.75rem;
+  text-align: center;
+}
+
+.access-copy {
+  margin-bottom: 1.5rem;
+  color: #5c6773;
+  text-align: center;
+}

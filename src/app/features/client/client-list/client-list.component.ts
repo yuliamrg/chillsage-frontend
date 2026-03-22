@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ClientVm } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 
@@ -12,6 +13,7 @@ import { ClientsService } from '../../../core/services/clients.service';
   styles: ``,
 })
 export class ClientListComponent implements OnInit {
+  readonly authService = inject(AuthService);
   private readonly clientsService = inject(ClientsService);
 
   clients: ClientVm[] = [];
@@ -34,6 +36,10 @@ export class ClientListComponent implements OnInit {
   }
 
   removeClient(id: number): void {
+    if (!this.canDeleteClients()) {
+      return;
+    }
+
     if (!window.confirm('Eliminar cliente?')) {
       return;
     }
@@ -44,5 +50,17 @@ export class ClientListComponent implements OnInit {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible eliminar el cliente.';
       },
     });
+  }
+
+  canCreateClients(): boolean {
+    return this.authService.canAccess('clients', 'create');
+  }
+
+  canUpdateClients(): boolean {
+    return this.authService.canAccess('clients', 'update');
+  }
+
+  canDeleteClients(): boolean {
+    return this.authService.canAccess('clients', 'delete');
   }
 }

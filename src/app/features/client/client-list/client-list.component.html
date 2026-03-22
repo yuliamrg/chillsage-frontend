@@ -21,7 +21,7 @@
         <h3 class="card-title">Lista de clientes</h3>
       </div>
       <div class="card-body p-0">
-        <div class="m-2">
+        <div class="m-2" *ngIf="canCreateClients()">
           <a [routerLink]="['/client/new']" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
         </div>
 
@@ -52,11 +52,11 @@
                   <i class="fas fa-eye"></i>
                   Ver
                 </a>
-                <a class="btn btn-warning btn-sm mr-1" [routerLink]="['/client/edit', client.id]">
+                <a class="btn btn-warning btn-sm mr-1" *ngIf="canUpdateClients()" [routerLink]="['/client/edit', client.id]">
                   <i class="far fa-edit"></i>
                   Editar
                 </a>
-                <button class="btn btn-danger btn-sm" type="button" (click)="removeClient(client.id)">
+                <button class="btn btn-danger btn-sm" *ngIf="canDeleteClients()" type="button" (click)="removeClient(client.id)">
                   <i class="fas fa-trash-alt"></i>
                   Eliminar
                 </button>

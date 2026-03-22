@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 import { UserVm } from '../../../core/models/domain.models';
 import { UsersService } from '../../../core/services/users.service';
 
@@ -12,6 +13,7 @@ import { UsersService } from '../../../core/services/users.service';
   styles: ``,
 })
 export class UsersListComponent implements OnInit {
+  readonly authService = inject(AuthService);
   private readonly usersService = inject(UsersService);
 
   users: UserVm[] = [];
@@ -34,6 +36,10 @@ export class UsersListComponent implements OnInit {
   }
 
   removeUser(id: number): void {
+    if (!this.canDeleteUsers()) {
+      return;
+    }
+
     if (!window.confirm('Eliminar usuario?')) {
       return;
     }
@@ -44,5 +50,17 @@ export class UsersListComponent implements OnInit {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible eliminar el usuario.';
       },
     });
+  }
+
+  canCreateUsers(): boolean {
+    return this.authService.canAccess('users', 'create');
+  }
+
+  canUpdateUsers(): boolean {
+    return this.authService.canAccess('users', 'update');
+  }
+
+  canDeleteUsers(): boolean {
+    return this.authService.canAccess('users', 'delete');
   }
 }

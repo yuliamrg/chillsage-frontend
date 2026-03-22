@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 import { RequestVm } from '../../../core/models/domain.models';
 import { RequestsService } from '../../../core/services/requests.service';
 
@@ -12,6 +13,7 @@ import { RequestsService } from '../../../core/services/requests.service';
   styles: ``,
 })
 export class RequestsListComponent implements OnInit {
+  readonly authService = inject(AuthService);
   private readonly requestsService = inject(RequestsService);
 
   requests: RequestVm[] = [];
@@ -34,6 +36,10 @@ export class RequestsListComponent implements OnInit {
   }
 
   removeRequest(id: number): void {
+    if (!this.canDeleteRequests()) {
+      return;
+    }
+
     if (!window.confirm('Eliminar solicitud?')) {
       return;
     }
@@ -44,5 +50,17 @@ export class RequestsListComponent implements OnInit {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible eliminar la solicitud.';
       },
     });
+  }
+
+  canCreateRequests(): boolean {
+    return this.authService.canAccess('requests', 'create');
+  }
+
+  canUpdateRequests(): boolean {
+    return this.authService.canAccess('requests', 'update');
+  }
+
+  canDeleteRequests(): boolean {
+    return this.authService.canAccess('requests', 'delete');
   }
 }

@@ -1,513 +1,164 @@
-# Contrato API Inferido para Chillsage Frontend
+# Contrato API Vigente para Chillsage Frontend
 
-## Objetivo
+Este documento resume el contrato que el frontend consume actualmente desde `../chillsage-backend`. Complementa, pero no reemplaza, la documentacion oficial del backend.
 
-Este documento describe lo que el frontend actual parece esperar consumir desde una API, a partir de las pantallas, rutas y formularios existentes.
+## Fuente de verdad
 
-No es un contrato oficial ya implementado en código. Es un contrato inferido del comportamiento visible del frontend y sirve como base para diseñar el backend.
+- `../chillsage-backend/docs/contracts/FRONTEND_API_SERVICES.md`
+- `../chillsage-backend/docs/CODEX_CONTEXT.md`
 
-## Estado actual del frontend
+Si hay divergencia entre este archivo y el backend, prevalece el backend.
 
-- No existe capa HTTP implementada.
-- No existen servicios Angular, interceptores ni DTOs.
-- Las pantallas son estáticas y usan datos mock.
-- Las rutas actuales no incluyen parámetros dinámicos como `:id`, aunque las vistas sí representan operaciones de listar, ver, crear, editar y eliminar.
+## Base URL
 
-## Convenciones recomendadas
+```text
+http://localhost:3037/api
+```
 
-- Base URL sugerida: `/api/v1`
-- Formato de respuesta: JSON
-- Fechas: ISO 8601
-- Identificadores: numéricos o UUID, pero consistentes por entidad
-- Respuestas de lista: incluir colección y, de ser posible, metadatos de paginación
+## Autenticacion
 
-Ejemplo:
+### Endpoint publico
+
+```text
+POST /users/login
+```
+
+Payload esperado:
 
 ```json
 {
-  "items": [],
-  "total": 0,
-  "page": 1,
-  "pageSize": 10
+  "email": "admin@example.com",
+  "password": "secret"
 }
 ```
 
-## Entidades y endpoints
+El backend tambien puede aceptar `username`, pero la UI actual usa `email + password`.
 
-### Clientes
-
-Pantallas observadas:
-
-- `/client/list`
-- `/client/new`
-- `/client/edit`
-- `/client/detail`
-
-Campos visibles:
-
-- `id`
-- `name`
-- `nit`
-- `address`
-- `email`
-
-Ejemplo de objeto:
+Respuesta esperada:
 
 ```json
 {
-  "id": 1,
-  "name": "Clinica de occidente",
-  "nit": "890450723",
-  "address": "Calle 18 Norte # 5N-34",
-  "email": "clinicadeoccidente.com"
+  "status": true,
+  "msg": "Login exitoso",
+  "access_token": "jwt-token",
+  "token_type": "Bearer",
+  "expires_in": "3600",
+  "user": {
+    "id": 1,
+    "username": "admin",
+    "name": "Ada",
+    "last_name": "Admin",
+    "email": "admin@example.com",
+    "client": null,
+    "client_name": null,
+    "role": 1,
+    "role_name": "admin",
+    "status": "active"
+  }
 }
 ```
 
-Endpoints sugeridos:
+### Sesion en frontend
 
-- `GET /api/v1/clients`
-- `GET /api/v1/clients/{id}`
-- `POST /api/v1/clients`
-- `PUT /api/v1/clients/{id}`
-- `DELETE /api/v1/clients/{id}`
+- la respuesta se transforma a `AuthSession`
+- la sesion se guarda en `localStorage`
+- el interceptor agrega `Authorization: Bearer <token>` a toda request API protegida
+- `/users/login` queda excluido del Bearer
 
-Payload mínimo de creación/edición:
+### Manejo de errores
 
-```json
-{
-  "name": "Clinica de occidente",
-  "nit": "890450723",
-  "address": "Calle 18 Norte # 5N-34",
-  "email": "clinicadeoccidente.com"
-}
+- `401` fuera de login: limpiar sesion y redirigir a `/login?reason=expired`
+- `403` fuera de login: redirigir a `/access-denied`
+
+## Roles y permisos consumidos por el frontend
+
+Roles reconocidos por id o nombre:
+
+- `1`: `admin`
+- `2`: `solicitante`
+- `3`: `planeador`
+- `4`: `tecnico`
+
+Matriz de permisos aplicada en UI y rutas:
+
+- `admin`: CRUD total sobre todos los recursos
+- `planeador`: CRUD en `clients`, `equipments`, `requests`, `orders`, `schedules`; lectura en `users`, `roles`, `profiles`
+- `tecnico`: lectura en `clients`, `equipments`, `requests`, `orders`, `schedules`
+- `solicitante`: lectura en `requests` y `orders`; creacion en `requests`
+
+Recursos modelados en frontend:
+
+- `users`
+- `roles`
+- `profiles`
+- `clients`
+- `equipments`
+- `requests`
+- `orders`
+- `schedules`
+
+Acciones modeladas:
+
+- `read`
+- `create`
+- `update`
+- `delete`
+
+## Rutas frontend relacionadas con auth
+
+- `/login`: publica
+- `/access-denied`: publica
+- resto del panel: protegido por `authGuard` o `authChildGuard`
+
+Las rutas por feature pueden declarar:
+
+- `data.requiredRoles`
+- `data.requiredPermission`
+
+## Recursos consumidos actualmente
+
+El frontend ya tiene capa API y mappers para:
+
+- `users`
+- `roles`
+- `clients`
+- `equipments`
+- `requests`
+- `orders`
+- `schedules`
+
+Cada cambio de contrato debe revisarse al menos en:
+
+- `src/app/core/models/domain.models.ts`
+- `src/app/core/mappers/domain.mappers.ts`
+- `src/app/core/api/`
+- `src/app/core/auth/` si el cambio afecta login, token o autorizacion
+- componentes `list`, `detail`, `new`, `edit` del feature afectado
+
+## Checklist de sincronizacion con backend
+
+1. Revisar endpoint, payload y codigos de error vigentes en `../chillsage-backend`.
+2. Actualizar modelos y mappers si cambia el shape de datos.
+3. Ajustar servicios o wrappers API si cambia endpoint, metodo o envoltura de respuesta.
+4. Ajustar guards, permisos o UI si cambia el esquema de auth/autorizacion.
+5. Actualizar pruebas afectadas.
+6. Ejecutar:
+
+```bash
+npm test -- --watch=false --browsers=ChromeHeadless
+npm run build
 ```
 
-### Equipos
+## Cobertura automatizada relacionada
 
-Pantallas observadas:
+La capa de auth actualmente tiene pruebas en:
 
-- `/equipment/list`
-- `/equipment/new`
-- `/equipment/edit`
-- `/equipment/detail`
+- `src/app/core/auth/auth.service.spec.ts`
+- `src/app/core/auth/auth.guard.spec.ts`
+- `src/app/core/auth/guest.guard.spec.ts`
+- `src/app/core/auth/permission.guard.spec.ts`
+- `src/app/core/auth/auth.interceptor.spec.ts`
 
-Campos visibles:
+## Nota practica
 
-- `id`
-- `name`
-- `brand`
-- `model`
-- `serial`
-- `fixedAssetCode`
-- `clientId`
-- `clientName`
-- `location`
-- `observations`
-
-Ejemplo de objeto:
-
-```json
-{
-  "id": 1,
-  "name": "Aire Acondicionado",
-  "brand": "York",
-  "model": "YSM",
-  "serial": "123456",
-  "fixedAssetCode": "CDO123",
-  "clientId": 1,
-  "clientName": "Clinica de occidente",
-  "location": "Rayos X",
-  "observations": "lorem ipsum dolor sit amet consectetur adipisicing elit"
-}
-```
-
-Endpoints sugeridos:
-
-- `GET /api/v1/equipment`
-- `GET /api/v1/equipment/{id}`
-- `POST /api/v1/equipment`
-- `PUT /api/v1/equipment/{id}`
-- `DELETE /api/v1/equipment/{id}`
-
-Soportes auxiliares sugeridos:
-
-- `GET /api/v1/clients`
-
-Payload mínimo de creación/edición:
-
-```json
-{
-  "name": "Aire Acondicionado",
-  "brand": "York",
-  "model": "YSM",
-  "serial": "123456",
-  "fixedAssetCode": "CDO123",
-  "clientId": 1,
-  "location": "Rayos X",
-  "observations": "Texto libre"
-}
-```
-
-### Solicitudes
-
-Pantallas observadas:
-
-- `/requests/list`
-- `/requests/all`
-- `/requests/new`
-- `/requests/edit`
-- `/requests/detail`
-
-Campos visibles:
-
-- `id`
-- `requestType`
-- `requestTypeId`
-- `requesterId`
-- `requesterName`
-- `equipmentId`
-- `equipmentSummary`
-- `createdAt`
-- `status`
-- `description`
-- `location`
-- `observations`
-
-Estados visibles:
-
-- `Pendiente`
-- `Aprobada`
-- `Anulada`
-
-Tipos visibles:
-
-- `Correctivo`
-- `Preventivo`
-- `Instalacion`
-- `Otros`
-
-Ejemplo de objeto:
-
-```json
-{
-  "id": 1,
-  "requestType": "Correctivo",
-  "requesterId": 12,
-  "requesterName": "Yuliam Rivera",
-  "equipmentId": 1,
-  "equipmentSummary": "Aire Acondicionado, York, YSM, 123456, CDO123",
-  "createdAt": "2024-10-01T08:00:00",
-  "status": "Pendiente",
-  "description": "Se solicita reparacion del equipo, no enfria",
-  "location": "Clinica de occidente, Rayos X",
-  "observations": "ninguna"
-}
-```
-
-Endpoints sugeridos:
-
-- `GET /api/v1/requests`
-- `GET /api/v1/requests?status=open`
-- `GET /api/v1/requests?status=all`
-- `GET /api/v1/requests/{id}`
-- `POST /api/v1/requests`
-- `PUT /api/v1/requests/{id}`
-- `DELETE /api/v1/requests/{id}`
-
-Soportes auxiliares sugeridos:
-
-- `GET /api/v1/request-types`
-- `GET /api/v1/equipment`
-- `GET /api/v1/locations?equipmentId={id}`
-
-Payload mínimo de creación:
-
-```json
-{
-  "requestTypeId": 1,
-  "equipmentId": 1,
-  "description": "Se solicita reparacion del equipo, no enfria",
-  "location": "Rayos X",
-  "observations": "ninguna"
-}
-```
-
-Payload mínimo de edición:
-
-```json
-{
-  "description": "Se solicita reparacion del equipo, no enfria",
-  "equipmentId": 1,
-  "status": "Aprobada",
-  "location": "Rayos X",
-  "observations": "ninguna"
-}
-```
-
-### Ordenes
-
-Pantallas observadas:
-
-- `/orders/list`
-- `/orders/finished`
-- `/orders/edit`
-- `/orders/detail`
-
-Campos visibles:
-
-- `id`
-- `sourceType`
-- `sourceId`
-- `requesterName`
-- `createdAt`
-- `description`
-- `responsibleName`
-- `equipmentId`
-- `equipmentSummary`
-- `status`
-- `location`
-- `observations`
-
-El frontend sugiere que una orden puede originarse en una solicitud.
-
-Ejemplo de objeto:
-
-```json
-{
-  "id": 1,
-  "sourceType": "request",
-  "sourceId": 1,
-  "requesterName": "Yuliam Rivera",
-  "createdAt": "2024-10-01T08:00:00",
-  "description": "Se solicita reparacion del equipo, no enfria",
-  "responsibleName": "Deyvis Cruz",
-  "equipmentId": 1,
-  "equipmentSummary": "Aire Acondicionado, York, YSM, 123456, CDO123",
-  "status": "Aprobada",
-  "location": "Clinica de occidente, Rayos X",
-  "observations": "ninguna"
-}
-```
-
-Endpoints sugeridos:
-
-- `GET /api/v1/orders`
-- `GET /api/v1/orders?status=pending`
-- `GET /api/v1/orders?status=finished`
-- `GET /api/v1/orders/{id}`
-- `POST /api/v1/orders`
-- `PUT /api/v1/orders/{id}`
-- `DELETE /api/v1/orders/{id}`
-
-Soportes auxiliares sugeridos:
-
-- `GET /api/v1/users?role=Tecnico`
-- `GET /api/v1/requests`
-- `GET /api/v1/equipment`
-
-Payload mínimo de creación/edición sugerido:
-
-```json
-{
-  "sourceType": "request",
-  "sourceId": 1,
-  "responsibleUserId": 25,
-  "equipmentId": 1,
-  "status": "Aprobada",
-  "location": "Rayos X",
-  "observations": "ninguna",
-  "description": "Se solicita reparacion del equipo, no enfria"
-}
-```
-
-### Cronogramas
-
-Pantallas observadas:
-
-- `/schedule/list`
-- `/schedule/new`
-- `/schedule/edit`
-- `/schedule/detail`
-
-Campos visibles:
-
-- `id`
-- `name`
-- `clientId`
-- `clientName`
-- `executionDate`
-- `scheduleType`
-- `description`
-- `status`
-- `equipmentIds`
-- `equipmentItems`
-
-Tipos visibles:
-
-- `Calibracion`
-- `Preventivo`
-- `Limpieza`
-- `Otros`
-
-Estados visibles:
-
-- `Pendiente`
-
-Ejemplo de objeto:
-
-```json
-{
-  "id": 1,
-  "name": "Mantenimiento preventivo Aire acondicionado",
-  "clientId": 1,
-  "clientName": "Clinica de occidente",
-  "executionDate": "2024-09-01T08:00:00",
-  "scheduleType": "Preventivo",
-  "description": "Mantenimiento preventivo a los aires acondicionados de la clinica de occidente",
-  "status": "Pendiente",
-  "equipmentIds": [1, 2, 5, 8]
-}
-```
-
-Endpoints sugeridos:
-
-- `GET /api/v1/schedules`
-- `GET /api/v1/schedules/{id}`
-- `POST /api/v1/schedules`
-- `PUT /api/v1/schedules/{id}`
-- `DELETE /api/v1/schedules/{id}`
-
-Soportes auxiliares sugeridos:
-
-- `GET /api/v1/clients`
-- `GET /api/v1/equipment?clientId={id}`
-- `GET /api/v1/schedule-types`
-
-Payload mínimo de creación/edición:
-
-```json
-{
-  "name": "Mantenimiento preventivo Aire acondicionado",
-  "clientId": 1,
-  "executionDate": "2024-09-01T08:00:00",
-  "scheduleType": "Preventivo",
-  "description": "Mantenimiento preventivo a los aires acondicionados de la clinica de occidente",
-  "status": "Pendiente",
-  "equipmentIds": [1, 2]
-}
-```
-
-### Usuarios
-
-Pantallas observadas:
-
-- `/users/list`
-- `/users/roles`
-- `/users/new`
-- `/users/edit`
-- `/users/detail`
-
-Campos visibles:
-
-- `id`
-- `firstName`
-- `lastName`
-- `email`
-- `clientId`
-- `clientName`
-- `phone`
-- `roleId`
-- `roleName`
-
-Roles visibles:
-
-- `Administrador`
-- `Tecnico`
-- `Planeador`
-- `Solicitante`
-
-Ejemplo de objeto:
-
-```json
-{
-  "id": 1,
-  "firstName": "Yuliam",
-  "lastName": "Rivera",
-  "email": "yurivera@gmail.com",
-  "clientId": 1,
-  "clientName": "Clinica de occidente",
-  "phone": "12345",
-  "roleId": 4,
-  "roleName": "Solicitante"
-}
-```
-
-Endpoints sugeridos:
-
-- `GET /api/v1/users`
-- `GET /api/v1/users/{id}`
-- `POST /api/v1/users`
-- `PUT /api/v1/users/{id}`
-- `DELETE /api/v1/users/{id}`
-- `GET /api/v1/roles`
-
-Soportes auxiliares sugeridos:
-
-- `GET /api/v1/clients`
-
-Payload mínimo de creación/edición:
-
-```json
-{
-  "firstName": "Yuliam",
-  "lastName": "Rivera",
-  "email": "yurivera@gmail.com",
-  "clientId": 1,
-  "phone": "12345",
-  "roleId": 4
-}
-```
-
-## Catálogos auxiliares
-
-Para evitar hardcodear opciones en el frontend, la API debería exponer catálogos para:
-
-- tipos de solicitud
-- tipos de cronograma
-- roles
-- estados de solicitud
-- estados de orden
-- estados de cronograma
-- clientes
-- equipos
-- ubicaciones por cliente o por equipo
-
-Ejemplo:
-
-```json
-[
-  { "id": 1, "name": "Correctivo" },
-  { "id": 2, "name": "Preventivo" }
-]
-```
-
-## Diferencias entre frontend actual y contrato recomendado
-
-- Las rutas del frontend hoy usan `/edit` y `/detail` sin `id`; para integración real conviene migrar a rutas como `/edit/:id` y `/detail/:id`.
-- En listas, varios campos aparecen como textos ya formateados, pero una API debería devolver identificadores y objetos relacionados por separado.
-- Algunas opciones se muestran como `select` aunque conceptualmente son texto libre o catálogos.
-- El frontend mezcla estados y tipos como texto. El backend debería soportar tanto `id` como `name`, o al menos un valor estable de máquina como `code`.
-
-## Recomendación mínima para implementación
-
-Si el backend se quiere alinear rápido con el frontend, el orden más útil es:
-
-1. `clients`
-2. `equipment`
-3. `users`
-4. `requests`
-5. `orders`
-6. `schedules`
-7. catálogos auxiliares
-
-Con eso se cubren primero los selectores dependientes y luego los módulos relacionales.
+Este documento ya no es un contrato inferido de pantallas mock. Refleja el contrato usado por la implementacion vigente del frontend, especialmente en login, JWT y autorizacion por rol.

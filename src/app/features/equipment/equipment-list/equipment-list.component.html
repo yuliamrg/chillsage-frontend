@@ -21,7 +21,7 @@
         <h3 class="card-title">Equipos</h3>
       </div>
       <div class="card-body p-0">
-        <div class="m-2">
+        <div class="m-2" *ngIf="canCreateEquipments()">
           <a routerLink="/equipment/new" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
         </div>
 
@@ -56,11 +56,11 @@
                   <i class="fas fa-eye"></i>
                   Ver
                 </a>
-                <a class="btn btn-warning btn-sm mr-1" [routerLink]="['/equipment/edit', equipment.id]">
+                <a class="btn btn-warning btn-sm mr-1" *ngIf="canUpdateEquipments()" [routerLink]="['/equipment/edit', equipment.id]">
                   <i class="far fa-edit"></i>
                   Editar
                 </a>
-                <button class="btn btn-danger btn-sm" type="button" (click)="removeEquipment(equipment.id)">
+                <button class="btn btn-danger btn-sm" *ngIf="canDeleteEquipments()" type="button" (click)="removeEquipment(equipment.id)">
                   <i class="fas fa-trash-alt"></i>
                   Eliminar
                 </button>

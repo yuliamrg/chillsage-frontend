@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
+  readonly authService = inject(AuthService);
+
   isSearchOpen = false;
   isSidebarCollapsed = false;
 
@@ -22,5 +26,9 @@ export class HeaderComponent {
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
     document.body.classList.toggle('sidebar-collapse', this.isSidebarCollapsed);
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

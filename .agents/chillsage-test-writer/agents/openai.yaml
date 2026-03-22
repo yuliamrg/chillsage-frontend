@@ -1,0 +1,4 @@
+interface:
+  display_name: "Chillsage Test Writer"
+  short_description: "Crea tests Angular para este frontend."
+  default_prompt: "Usa $chillsage-test-writer para crear o actualizar pruebas de este cambio en Chillsage."

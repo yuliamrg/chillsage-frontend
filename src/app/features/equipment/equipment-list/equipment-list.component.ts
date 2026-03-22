@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 import { EquipmentVm } from '../../../core/models/domain.models';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 
@@ -12,6 +13,7 @@ import { EquipmentsService } from '../../../core/services/equipments.service';
   styles: ``,
 })
 export class EquipmenListComponent implements OnInit {
+  readonly authService = inject(AuthService);
   private readonly equipmentsService = inject(EquipmentsService);
 
   equipments: EquipmentVm[] = [];
@@ -34,6 +36,10 @@ export class EquipmenListComponent implements OnInit {
   }
 
   removeEquipment(id: number): void {
+    if (!this.canDeleteEquipments()) {
+      return;
+    }
+
     if (!window.confirm('Eliminar equipo?')) {
       return;
     }
@@ -44,5 +50,17 @@ export class EquipmenListComponent implements OnInit {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible eliminar el equipo.';
       },
     });
+  }
+
+  canCreateEquipments(): boolean {
+    return this.authService.canAccess('equipments', 'create');
+  }
+
+  canUpdateEquipments(): boolean {
+    return this.authService.canAccess('equipments', 'update');
+  }
+
+  canDeleteEquipments(): boolean {
+    return this.authService.canAccess('equipments', 'delete');
   }
 }

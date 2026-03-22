@@ -9,7 +9,7 @@
   <section class="content">
     <div class="card">
       <div class="card-body p-0">
-        <div class="m-2">
+        <div class="m-2" *ngIf="canCreateSchedules()">
           <a routerLink="/schedule/new" class="btn btn-success btn-md"><i class="fas fa-plus-circle"></i></a>
         </div>
         <table class="table table-hover table-striped table-bordered table-sm">
@@ -30,7 +30,7 @@
               <td>{{ schedule.status }}</td>
               <td>
                 <a class="btn btn-info btn-sm mr-1" [routerLink]="['/schedule/detail', schedule.id]">Ver</a>
-                <a class="btn btn-warning btn-sm mr-1" [routerLink]="['/schedule/edit', schedule.id]">Editar</a>
+                <a class="btn btn-warning btn-sm mr-1" *ngIf="canUpdateSchedules()" [routerLink]="['/schedule/edit', schedule.id]">Editar</a>
               </td>
             </tr>
           </tbody>
