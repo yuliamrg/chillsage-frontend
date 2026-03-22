@@ -1,17 +1,15 @@
 # Git Workflow
 
-Este proyecto debe manejarse con un flujo de ramas corto, commits pequeños y validaciones locales antes de integrar cambios. La idea es mantener el historial legible y reducir merge conflicts innecesarios.
+Este proyecto debe manejarse con un flujo de ramas corto, commits pequenos y validaciones locales antes de integrar cambios. La idea es mantener el historial legible y reducir merge conflicts innecesarios.
 
-## Reglas base
+## Regla general
 
-- Nunca trabajar directamente sobre `main`.
-- Crear una rama por cambio funcional o técnico.
-- Hacer commits pequeños y temáticos.
-- No mezclar refactor, fixes y cambios visuales no relacionados en el mismo commit.
-- Ejecutar validaciones locales antes de abrir PR o mergear.
-- Rebasear o actualizar la rama con frecuencia si `main` avanzó.
+- No desarrollar directamente sobre `main`.
+- Crear una rama por cambio funcional o tecnico.
+- Hacer commits pequenos y tematicos.
+- Ejecutar validaciones locales antes de integrar cambios.
 
-## Convención de ramas
+## Convencion de ramas
 
 Usar nombres descriptivos con prefijo:
 
@@ -27,7 +25,7 @@ Ejemplos:
 - `fix/sidebar-navigation-toggle`
 - `docs/project-and-git-workflow`
 
-## Convención de commits
+## Convencion de commits
 
 Usar mensajes en estilo Conventional Commits:
 
@@ -39,12 +37,14 @@ Usar mensajes en estilo Conventional Commits:
 
 Reglas:
 
-- El título debe explicar el cambio, no el proceso.
+- El titulo debe explicar el cambio, no el proceso.
 - Usar verbo en presente.
 - Mantener el asunto idealmente por debajo de 72 caracteres.
 - Si el cambio es grande, agregar cuerpo explicando contexto y riesgo.
 
 ## Flujo recomendado
+
+### Caso general
 
 1. Actualizar `main` local:
 
@@ -59,7 +59,7 @@ git pull --ff-only
 git checkout -b feat/nombre-del-cambio
 ```
 
-3. Desarrollar en incrementos pequeños.
+3. Desarrollar en incrementos pequenos.
 
 4. Revisar cambios antes de commit:
 
@@ -68,16 +68,16 @@ git status
 git diff
 ```
 
-5. Ejecutar validaciones mínimas del proyecto:
+5. Ejecutar validaciones minimas del proyecto:
 
 ```bash
 npm run build
 ```
 
-Si el cambio afecta comportamiento crítico, además:
+Si el cambio afecta comportamiento critico, ademas:
 
 ```bash
-npm test
+npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
 6. Agregar solo los archivos necesarios:
@@ -86,26 +86,57 @@ npm test
 git add <archivos>
 ```
 
-7. Crear commit atómico:
+7. Crear commit atomico:
 
 ```bash
 git commit -m "feat: descripcion breve"
 ```
 
-8. Antes de integrar, actualizar la rama con `main`:
+8. Integrar cambios a `main`.
+
+## Flujo explicito para trabajo individual
+
+Si estas trabajando solo en este repositorio, la forma esperada de trabajar sigue siendo con rama de feature primero y merge a `main` al final. El hecho de trabajar solo no cambia eso; solo evita la necesidad de PR si no lo necesitas.
+
+Secuencia recomendada:
+
+1. Crear y trabajar en una rama:
 
 ```bash
-git fetch origin
-git rebase origin/main
+git checkout -b feat/nombre-del-cambio
 ```
 
-9. Resolver conflictos, volver a validar y publicar:
+2. Hacer commits en esa rama.
+
+3. Validar:
 
 ```bash
-git push -u origin feat/nombre-del-cambio
+npm test -- --watch=false --browsers=ChromeHeadless
+npm run build
 ```
 
-## Qué evitar
+4. Pasar los cambios a `main` local:
+
+```bash
+git checkout main
+git merge --ff-only feat/nombre-del-cambio
+```
+
+Si `--ff-only` no aplica porque `main` avanzo o hiciste commits adicionales en ambos lados, entonces usar:
+
+```bash
+git merge feat/nombre-del-cambio
+```
+
+5. Opcionalmente, borrar la rama si ya no se necesita:
+
+```bash
+git branch -d feat/nombre-del-cambio
+```
+
+En este proyecto, cuando trabajas solo, esa es la forma correcta de pasar cambios a `main`.
+
+## Que evitar
 
 - Commits como `cambios`, `fix`, `update`, `prueba`.
 - Subir artefactos temporales como logs, screenshots manuales o builds locales.
@@ -116,16 +147,15 @@ git push -u origin feat/nombre-del-cambio
 ## Checklist antes de merge
 
 - La rama compila con `npm run build`.
-- Los archivos versionados son únicamente los necesarios.
+- Si hubo cambio funcional, las pruebas relevantes pasan.
+- Los archivos versionados son unicamente los necesarios.
 - El commit message explica correctamente el cambio.
-- La documentación fue actualizada si cambió arquitectura, flujo o setup.
+- La documentacion fue actualizada si cambio arquitectura, flujo o setup.
 - No quedan logs, capturas ni archivos temporales en staging.
 
-## Política práctica para este repo
+## Politica practica para este repo
 
-Mientras el proyecto siga en etapa de prototipo:
-
-- Priorizar ramas pequeñas y frecuentes.
+- Priorizar ramas pequenas y frecuentes.
 - Documentar cualquier cambio estructural en `README.md`.
-- Si se agrega tooling nuevo, justificarlo en el PR o en la documentación.
-- Si un cambio reduce deuda técnica, dejar explícito qué dependencia o comportamiento heredado se eliminó.
+- Si se agrega tooling nuevo, justificarlo en el PR o en la documentacion.
+- Si un cambio reduce deuda tecnica, dejar explicito que dependencia o comportamiento heredado se elimino.
