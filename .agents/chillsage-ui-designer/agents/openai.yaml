@@ -1,0 +1,5 @@
+interface:
+  display_name: "Chillsage UI Designer"
+  short_description: "Disena interfaces consistentes para Chillsage"
+  default_prompt: "Usa $chillsage-ui-designer para mejorar esta vista de Chillsage manteniendo Angular 17 y AdminLTE."
+  brand_color: "#7C3AED"

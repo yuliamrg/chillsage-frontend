@@ -1,50 +1,77 @@
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1>Dashboard</h1>
+      <div class="page-hero">
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">
+            Vista general del panel operativo para seguir solicitudes, ordenes, cronogramas y actividad del sistema.
+          </p>
         </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item active">Dashboard</li>
-          </ol>
-        </div>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
       </div>
-    </div><!-- /.container-fluid -->
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-
-    <!-- Default box -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Dashboard</h3>
-
-        <div class="card-tools">
-          <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse" style="display: none;">
-            <i class="fas fa-minus"></i>
-          </button>
-          <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove" style="display: none">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      </div>
-      <div class="card-body">
-        Dashboard Funciona!!
-      </div>
-      <!-- /.card-body -->
-      <div class="card-footer">
-        Footer del dashboard
-      </div>
-      <!-- /.card-footer-->
     </div>
-    <!-- /.card -->
-
   </section>
-  <!-- /.content -->
+
+  <section class="content">
+    <div class="container-fluid section-stack">
+      <div class="hero-grid">
+        <div class="card hero-card">
+          <div class="card-body">
+            <span class="hero-badge">
+              <i class="fas fa-snowflake"></i>
+              Centro de control
+            </span>
+            <h2 class="hero-heading">Gestiona la operacion diaria sin perder contexto.</h2>
+            <p class="hero-copy">
+              El panel ahora prioriza jerarquia visual, acciones claras y superficies mas limpias para acelerar lectura y navegacion.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" routerLink="/requests/list">Ver solicitudes</a>
+              <a class="btn btn-outline-primary" routerLink="/orders/list">Revisar ordenes</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Foco del dia</h3>
+          </div>
+          <div class="card-body">
+            <ol class="aside-list">
+              <li>Revisar solicitudes abiertas y priorizar seguimiento.</li>
+              <li>Verificar ordenes pendientes antes de cierre.</li>
+              <li>Confirmar cronogramas activos para el equipo operativo.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Solicitudes</span>
+          <strong class="stat-value">Abiertas</strong>
+          <div class="stat-help">Acceso rapido al flujo principal de atencion.</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Ordenes</span>
+          <strong class="stat-value">En curso</strong>
+          <div class="stat-help">Seguimiento visual con acciones directas.</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Equipos</span>
+          <strong class="stat-value">Inventario</strong>
+          <div class="stat-help">Consulta y mantenimiento desde un solo panel.</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Usuarios</span>
+          <strong class="stat-value">Roles</strong>
+          <div class="stat-help">Administracion clara del acceso operativo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
-<!-- /.content-wrapper -->

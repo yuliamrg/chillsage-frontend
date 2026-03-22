@@ -1,0 +1,20 @@
+.main-footer {
+  padding: 18px 24px;
+  color: var(--cs-color-muted);
+  background: rgb(255 255 255 / 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.footer-copy {
+  color: var(--cs-color-ink);
+  font-weight: 700;
+}
+
+.footer-link {
+  color: var(--cs-color-primary);
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}

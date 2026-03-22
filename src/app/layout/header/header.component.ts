@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './header.component.html',
-  styles: ``
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
   isSearchOpen = false;
