@@ -168,9 +168,9 @@ npm test -- --watch=false --browsers=ChromeHeadless
 npm run build
 ```
 
-Adicionalmente, el repo incluye una skill local para ayudar a crear pruebas nuevas:
+Adicionalmente, las skills usadas para este proyecto migraron a `.codex/`.
 
-- `.agents/chillsage-test-writer/`
+Esa carpeta se usa como configuracion local de Codex para este entorno y no hace parte del versionamiento del repositorio. La carpeta `.agents/` ya no se usa en este proyecto.
 
 ## Workflow de Git
 
