@@ -164,7 +164,8 @@ La base de pruebas actual cubre la capa de autenticacion:
 Validacion minima esperada para cambios funcionales:
 
 ```bash
-npm test -- --watch=false --browsers=ChromeHeadless
+npm run test:auto
+npm run test:headless
 npm run build
 ```
 
@@ -201,7 +202,8 @@ Resumen practico:
 Sobre el estado actual se ejecutaron:
 
 ```bash
-npm test -- --watch=false --browsers=ChromeHeadless
+npm run test:auto
+npm run test:headless
 npm run build
 ```
 

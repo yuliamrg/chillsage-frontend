@@ -77,7 +77,7 @@ npm run build
 Si el cambio afecta comportamiento critico, ademas:
 
 ```bash
-npm test -- --watch=false --browsers=ChromeHeadless
+npm run test:headless
 ```
 
 6. Agregar solo los archivos necesarios:
@@ -111,7 +111,7 @@ git checkout -b feat/nombre-del-cambio
 3. Validar:
 
 ```bash
-npm test -- --watch=false --browsers=ChromeHeadless
+npm run test:headless
 npm run build
 ```
 

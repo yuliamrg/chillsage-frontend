@@ -176,7 +176,7 @@ Notas practicas de integracion:
 7. Ejecutar:
 
 ```bash
-npm test -- --watch=false --browsers=ChromeHeadless
+npm run test:headless
 npm run build
 ```
 
