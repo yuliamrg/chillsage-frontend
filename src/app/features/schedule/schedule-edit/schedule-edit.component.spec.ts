@@ -94,4 +94,29 @@ describe('ScheduleEditComponent', () => {
     );
     expect(router.navigate).toHaveBeenCalledWith(['/schedule/list']);
   });
+
+  it('redirige al detalle si el cronograma ya esta cerrado', async () => {
+    schedulesService.getById.and.returnValue(
+      of({
+        id: 8,
+        clientId: 1,
+        name: 'Preventivo marzo',
+        type: 'preventive',
+        status: 'closed',
+        scheduledDate: '2026-03-28T00:00:00.000Z',
+        description: 'Mantenimiento mensual',
+        equipmentIds: [10],
+      } as any)
+    );
+
+    fixture = TestBed.createComponent(ScheduleEditComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    await Promise.resolve();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/schedule/detail', 8], {
+      state: { errorMessage: 'El cronograma ya no se puede editar porque su estado actual es solo lectura.' },
+    });
+  });
 });

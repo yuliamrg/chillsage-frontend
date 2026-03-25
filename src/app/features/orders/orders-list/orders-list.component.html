@@ -100,11 +100,11 @@
                   <td>{{ order.workedHours ?? '-' }}</td>
                   <td>
                     <a class="btn btn-info btn-sm mr-1" [routerLink]="['/orders/detail', order.id]">Ver</a>
-                    <a class="btn btn-warning btn-sm mr-1" *ngIf="authService.canAccess('orders', 'update')" [routerLink]="['/orders/edit', order.id]">Editar</a>
-                    <button type="button" class="btn btn-secondary btn-sm mr-1" *ngIf="authService.canAccess('orders', 'assign') && order.status !== 'completed' && order.status !== 'cancelled'" (click)="assignOrder(order)">Asignar</button>
-                    <button type="button" class="btn btn-primary btn-sm mr-1" *ngIf="authService.canAccess('orders', 'start') && order.status === 'assigned'" (click)="startOrder(order)">Iniciar</button>
-                    <button type="button" class="btn btn-success btn-sm mr-1" *ngIf="authService.canAccess('orders', 'complete') && order.status === 'in_progress'" (click)="completeOrder(order)">Completar</button>
-                    <button type="button" class="btn btn-danger btn-sm" *ngIf="authService.canAccess('orders', 'cancel') && order.status !== 'completed' && order.status !== 'cancelled'" (click)="cancelOrder(order)">Anular</button>
+                    <a class="btn btn-warning btn-sm mr-1" *ngIf="canEditOrder(order)" [routerLink]="['/orders/edit', order.id]">Editar</a>
+                    <button type="button" class="btn btn-secondary btn-sm mr-1" *ngIf="canAssignOrder(order)" (click)="assignOrder(order)">Asignar</button>
+                    <button type="button" class="btn btn-primary btn-sm mr-1" *ngIf="canStartOrder(order)" (click)="startOrder(order)">Iniciar</button>
+                    <button type="button" class="btn btn-success btn-sm mr-1" *ngIf="canCompleteOrder(order)" (click)="completeOrder(order)">Completar</button>
+                    <button type="button" class="btn btn-danger btn-sm" *ngIf="canCancelOrder(order)" (click)="cancelOrder(order)">Anular</button>
                   </td>
                 </tr>
                 <tr *ngIf="!orders.length">

@@ -15,8 +15,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title">{{ request.title }}</h3>
           <div>
-            <button type="button" class="btn btn-success btn-sm mr-2" *ngIf="request.status === 'pending' && authService.canAccess('requests', 'approve')" (click)="approveRequest()">Aprobar</button>
-            <button type="button" class="btn btn-danger btn-sm" *ngIf="request.status === 'pending' && authService.canAccess('requests', 'cancel')" (click)="cancelRequest()">Anular</button>
+            <a class="btn btn-warning btn-sm mr-2" *ngIf="canEditRequest()" [routerLink]="['/requests/edit', request.id]">Editar</a>
+            <a class="btn btn-primary btn-sm mr-2" *ngIf="canCreateOrder()" [routerLink]="['/orders/new']" [queryParams]="{ requestId: request.id }">Crear orden</a>
+            <button type="button" class="btn btn-success btn-sm mr-2" *ngIf="canApproveRequest()" (click)="approveRequest()">Aprobar</button>
+            <button type="button" class="btn btn-danger btn-sm" *ngIf="canCancelRequest()" (click)="cancelRequest()">Anular</button>
           </div>
         </div>
         <div class="card-body">

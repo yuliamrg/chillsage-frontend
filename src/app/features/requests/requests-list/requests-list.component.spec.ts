@@ -90,4 +90,15 @@ describe('RequestsListComponent', () => {
 
     expect(requestsService.cancel).not.toHaveBeenCalled();
   });
+
+  it('solo permite editar solicitudes pending', () => {
+    expect(component.canEditRequest({ id: 10, status: 'pending' } as any)).toBeTrue();
+    expect(component.canEditRequest({ id: 10, status: 'approved' } as any)).toBeFalse();
+  });
+
+  it('solo permite crear orden para solicitudes approved sin orden asociada', () => {
+    expect(component.canCreateOrder({ id: 10, status: 'approved', orderId: null } as any)).toBeTrue();
+    expect(component.canCreateOrder({ id: 10, status: 'approved', orderId: 22 } as any)).toBeFalse();
+    expect(component.canCreateOrder({ id: 10, status: 'pending', orderId: null } as any)).toBeFalse();
+  });
 });

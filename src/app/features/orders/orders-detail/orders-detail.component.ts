@@ -4,6 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { OrderVm } from '../../../core/models/domain.models';
 import { OrdersService } from '../../../core/services/orders.service';
+import {
+  canCancelOrder,
+  canCompleteOrder,
+  canStartOrder,
+  isEditableOrder,
+} from '../../../core/utils/operational-rules';
 
 @Component({
   selector: 'app-orders-detail',
@@ -22,6 +28,7 @@ export class OrdersDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const orderId = Number(this.route.snapshot.paramMap.get('id'));
+    this.errorMessage = history.state?.errorMessage ?? '';
     this.loadOrder(orderId);
   }
 
@@ -36,38 +43,48 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   startOrder(): void {
-    if (!this.order) {
+    if (!this.canStartOrder()) {
       return;
     }
 
-    const startedAt = window.prompt('Fecha y hora de inicio (ISO o vacio para usar backend)', this.order.startedAt ?? '') || null;
-    this.ordersService.start(this.order.id, { startedAt }).subscribe({
+    const order = this.order;
+    if (!order) {
+      return;
+    }
+
+    const startedAt = window.prompt('Fecha y hora de inicio (ISO o vacio para usar backend)', order.startedAt ?? '') || null;
+    this.ordersService.start(order.id, { startedAt }).subscribe({
       next: (order) => (this.order = order),
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible iniciar la orden.'),
     });
   }
 
   completeOrder(): void {
-    if (!this.order) {
+    if (!this.canCompleteOrder()) {
+      return;
+    }
+
+    const order = this.order;
+    if (!order) {
       return;
     }
 
     const workDescription = window.prompt('Descripcion del trabajo realizado');
-    const workedHours = Number(window.prompt('Horas trabajadas', this.order.workedHours?.toString() ?? ''));
+    const workedHours = Number(window.prompt('Horas trabajadas', order.workedHours?.toString() ?? ''));
     if (!workDescription || Number.isNaN(workedHours)) {
       return;
     }
 
-    const finishedAt = window.prompt('Fecha y hora de finalizacion (ISO o vacio para usar backend)', this.order.finishedAt ?? '') || null;
-    const closureNotes = window.prompt('Notas de cierre', this.order.closureNotes ?? '') ?? '';
-    const diagnosis = window.prompt('Diagnostico final', this.order.diagnosis ?? '') ?? '';
-    const receivedSatisfactionPrompt = window.prompt('Recibida a satisfaccion? si/no', this.order.receivedSatisfaction === null ? '' : this.order.receivedSatisfaction ? 'si' : 'no');
+    const finishedAt = window.prompt('Fecha y hora de finalizacion (ISO o vacio para usar backend)', order.finishedAt ?? '') || null;
+    const closureNotes = window.prompt('Notas de cierre', order.closureNotes ?? '') ?? '';
+    const diagnosis = window.prompt('Diagnostico final', order.diagnosis ?? '') ?? '';
+    const receivedSatisfactionPrompt = window.prompt('Recibida a satisfaccion? si/no', order.receivedSatisfaction === null ? '' : order.receivedSatisfaction ? 'si' : 'no');
     const receivedSatisfaction =
       receivedSatisfactionPrompt === null || receivedSatisfactionPrompt === ''
         ? null
         : receivedSatisfactionPrompt.toLowerCase() === 'si';
 
-    this.ordersService.complete(this.order.id, {
+    this.ordersService.complete(order.id, {
       finishedAt,
       workedHours,
       workDescription,
@@ -81,7 +98,12 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   cancelOrder(): void {
-    if (!this.order) {
+    if (!this.canCancelOrder()) {
+      return;
+    }
+
+    const order = this.order;
+    if (!order) {
       return;
     }
 
@@ -90,10 +112,30 @@ export class OrdersDetailComponent implements OnInit {
       return;
     }
 
-    this.ordersService.cancel(this.order.id, { cancelReason }).subscribe({
+    this.ordersService.cancel(order.id, { cancelReason }).subscribe({
       next: (order) => (this.order = order),
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible anular la orden.'),
     });
+  }
+
+  private isTechnician(): boolean {
+    return this.authService.role() === 'tecnico';
+  }
+
+  canEditOrder(): boolean {
+    return isEditableOrder(this.order) && this.authService.canAccess('orders', 'update');
+  }
+
+  canStartOrder(): boolean {
+    return this.authService.canAccess('orders', 'start') && canStartOrder(this.order, this.authService.user(), this.isTechnician());
+  }
+
+  canCompleteOrder(): boolean {
+    return this.authService.canAccess('orders', 'complete') && canCompleteOrder(this.order, this.authService.user(), this.isTechnician());
+  }
+
+  canCancelOrder(): boolean {
+    return canCancelOrder(this.order) && this.authService.canAccess('orders', 'cancel');
   }
 
   formatStatus(status: string | null): string {

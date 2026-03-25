@@ -13,6 +13,9 @@
         <form (ngSubmit)="submit()">
           <div class="alert alert-danger m-3" *ngIf="errorMessage">{{ errorMessage }}</div>
           <div class="card-body">
+            <div class="alert alert-warning">
+              Esta vista solo modifica campos permitidos por el backend. El estado y las transiciones operativas se ejecutan con acciones dedicadas.
+            </div>
             <div class="row">
               <div class="col-md-6 form-group">
                 <label>Solicitud</label>

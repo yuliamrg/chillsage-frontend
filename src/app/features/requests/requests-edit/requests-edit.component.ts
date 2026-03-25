@@ -8,6 +8,7 @@ import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { RequestsService } from '../../../core/services/requests.service';
 import { UsersService } from '../../../core/services/users.service';
+import { isEditableRequest } from '../../../core/utils/operational-rules';
 
 @Component({
   selector: 'app-requests-edit',
@@ -50,6 +51,13 @@ export class RequestsEditComponent implements OnInit {
       equipments: this.equipmentsService.getAll(),
     }).subscribe({
       next: ({ request, clients, users, equipments }) => {
+        if (!isEditableRequest(request)) {
+          void this.router.navigate(['/requests/detail', this.requestId], {
+            state: { errorMessage: 'La solicitud ya no se puede editar porque su estado actual es solo lectura.' },
+          });
+          return;
+        }
+
         this.clients = clients;
         this.requesters = users.filter((user) => user.status === 'active' || user.status === 'activo');
         this.equipments = equipments;

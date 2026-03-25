@@ -4,6 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { RequestVm } from '../../../core/models/domain.models';
 import { RequestsService } from '../../../core/services/requests.service';
+import {
+  canApproveRequest,
+  canCancelRequest,
+  canCreateOrderFromRequest,
+  isEditableRequest,
+} from '../../../core/utils/operational-rules';
 
 @Component({
   selector: 'app-requests-detail',
@@ -22,6 +28,7 @@ export class RequestsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const requestId = Number(this.route.snapshot.paramMap.get('id'));
+    this.errorMessage = history.state?.errorMessage ?? '';
     this.loadRequest(requestId);
   }
 
@@ -38,19 +45,29 @@ export class RequestsDetailComponent implements OnInit {
   }
 
   approveRequest(): void {
-    if (!this.request || !this.authService.canAccess('requests', 'approve')) {
+    if (!this.canApproveRequest()) {
       return;
     }
 
-    const reviewNotes = window.prompt('Notas de aprobacion', this.request.reviewNotes ?? '') ?? '';
-    this.requestsService.approve(this.request.id, { reviewNotes }).subscribe({
+    const request = this.request;
+    if (!request) {
+      return;
+    }
+
+    const reviewNotes = window.prompt('Notas de aprobacion', request.reviewNotes ?? '') ?? '';
+    this.requestsService.approve(request.id, { reviewNotes }).subscribe({
       next: (request) => (this.request = request),
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible aprobar la solicitud.'),
     });
   }
 
   cancelRequest(): void {
-    if (!this.request || !this.authService.canAccess('requests', 'cancel')) {
+    if (!this.canCancelRequest()) {
+      return;
+    }
+
+    const request = this.request;
+    if (!request) {
       return;
     }
 
@@ -59,11 +76,27 @@ export class RequestsDetailComponent implements OnInit {
       return;
     }
 
-    const reviewNotes = window.prompt('Notas de revision', this.request.reviewNotes ?? '') ?? '';
-    this.requestsService.cancel(this.request.id, { cancelReason, reviewNotes }).subscribe({
+    const reviewNotes = window.prompt('Notas de revision', request.reviewNotes ?? '') ?? '';
+    this.requestsService.cancel(request.id, { cancelReason, reviewNotes }).subscribe({
       next: (request) => (this.request = request),
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible anular la solicitud.'),
     });
+  }
+
+  canEditRequest(): boolean {
+    return isEditableRequest(this.request) && this.authService.canAccess('requests', 'update');
+  }
+
+  canApproveRequest(): boolean {
+    return canApproveRequest(this.request) && this.authService.canAccess('requests', 'approve');
+  }
+
+  canCancelRequest(): boolean {
+    return canCancelRequest(this.request) && this.authService.canAccess('requests', 'cancel');
+  }
+
+  canCreateOrder(): boolean {
+    return canCreateOrderFromRequest(this.request) && this.authService.canAccess('orders', 'create');
   }
 
   formatStatus(status: string | null): string {

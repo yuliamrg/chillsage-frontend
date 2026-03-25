@@ -13,9 +13,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title">Orden #{{ order.id }}</h3>
           <div>
-            <button type="button" class="btn btn-primary btn-sm mr-2" *ngIf="order.status === 'assigned' && authService.canAccess('orders', 'start')" (click)="startOrder()">Iniciar</button>
-            <button type="button" class="btn btn-success btn-sm mr-2" *ngIf="order.status === 'in_progress' && authService.canAccess('orders', 'complete')" (click)="completeOrder()">Completar</button>
-            <button type="button" class="btn btn-danger btn-sm" *ngIf="order.status !== 'completed' && authService.canAccess('orders', 'cancel')" (click)="cancelOrder()">Anular</button>
+            <a class="btn btn-warning btn-sm mr-2" *ngIf="canEditOrder()" [routerLink]="['/orders/edit', order.id]">Editar</a>
+            <button type="button" class="btn btn-primary btn-sm mr-2" *ngIf="canStartOrder()" (click)="startOrder()">Iniciar</button>
+            <button type="button" class="btn btn-success btn-sm mr-2" *ngIf="canCompleteOrder()" (click)="completeOrder()">Completar</button>
+            <button type="button" class="btn btn-danger btn-sm" *ngIf="canCancelOrder()" (click)="cancelOrder()">Anular</button>
           </div>
         </div>
         <div class="card-body">

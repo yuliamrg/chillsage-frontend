@@ -9,6 +9,12 @@ import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { RequestsService } from '../../../core/services/requests.service';
 import { UsersService } from '../../../core/services/users.service';
+import {
+  canApproveRequest,
+  canCancelRequest,
+  canCreateOrderFromRequest,
+  isEditableRequest,
+} from '../../../core/utils/operational-rules';
 
 @Component({
   selector: 'app-open-requests',
@@ -132,6 +138,22 @@ export class RequestsListComponent implements OnInit {
 
   canDeleteRequests(): boolean {
     return this.authService.canAccess('requests', 'delete');
+  }
+
+  canEditRequest(request: RequestVm): boolean {
+    return isEditableRequest(request) && this.canUpdateRequests();
+  }
+
+  canApproveRequest(request: RequestVm): boolean {
+    return canApproveRequest(request) && this.canApproveRequests();
+  }
+
+  canCancelRequest(request: RequestVm): boolean {
+    return canCancelRequest(request) && this.canCancelRequests();
+  }
+
+  canCreateOrder(request: RequestVm): boolean {
+    return canCreateOrderFromRequest(request) && this.authService.canAccess('orders', 'create');
   }
 
   formatStatus(status: string | null): string {

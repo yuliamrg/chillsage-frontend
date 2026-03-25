@@ -12,16 +12,21 @@ describe('OrdersListComponent', () => {
   let fixture: any;
   let component: OrdersListComponent;
   let ordersService: jasmine.SpyObj<OrdersService>;
+  let authService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
     ordersService = jasmine.createSpyObj<OrdersService>('OrdersService', ['getAll', 'assign', 'start', 'complete', 'cancel']);
+    authService = jasmine.createSpyObj<AuthService>('AuthService', ['canAccess', 'role', 'user']);
+    authService.canAccess.and.returnValue(true);
+    authService.role.and.returnValue('planeador');
+    authService.user.and.returnValue({ id: 99, roleId: 3, roleName: 'planeador' } as any);
 
     await TestBed.configureTestingModule({
       imports: [OrdersListComponent],
       providers: [
         provideRouter([]),
         { provide: OrdersService, useValue: ordersService },
-        { provide: AuthService, useValue: jasmine.createSpyObj<AuthService>('AuthService', ['canAccess']) },
+        { provide: AuthService, useValue: authService },
         { provide: ClientsService, useValue: { getAll: () => of([]) } },
         { provide: EquipmentsService, useValue: { getAll: () => of([]) } },
         {
@@ -85,5 +90,34 @@ describe('OrdersListComponent', () => {
       receivedSatisfaction: true,
     });
     expect(component.loadOrders).toHaveBeenCalled();
+  });
+
+  it('bloquea start y complete para un tecnico no asignado', () => {
+    authService.role.and.returnValue('tecnico');
+    authService.user.and.returnValue({ id: 4, roleId: 4, roleName: 'tecnico' } as any);
+
+    expect(component.canStartOrder({ id: 10, status: 'assigned', assignedUserId: 7 } as any)).toBeFalse();
+    expect(component.canCompleteOrder({ id: 10, status: 'in_progress', assignedUserId: 7 } as any)).toBeFalse();
+  });
+
+  it('solo permite asignar ordenes en estado assigned', () => {
+    expect(component.canAssignOrder({ id: 10, status: 'assigned' } as any)).toBeTrue();
+    expect(component.canAssignOrder({ id: 10, status: 'in_progress' } as any)).toBeFalse();
+  });
+
+  it('renderiza acciones segun estado operativo de la orden', () => {
+    component.orders = [
+      { id: 10, status: 'assigned', assignedUserId: 4, requestSummary: 'R1' } as any,
+      { id: 11, status: 'in_progress', assignedUserId: 4, requestSummary: 'R2' } as any,
+      { id: 12, status: 'completed', assignedUserId: 4, requestSummary: 'R3' } as any,
+    ];
+
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('Asignar');
+    expect(text).toContain('Iniciar');
+    expect(text).toContain('Completar');
+    expect(text).toContain('Ver');
   });
 });

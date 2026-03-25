@@ -7,6 +7,7 @@ import { ClientVm, EquipmentVm, ScheduleFormValue } from '../../../core/models/d
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { SchedulesService } from '../../../core/services/schedules.service';
+import { isEditableSchedule } from '../../../core/utils/operational-rules';
 
 const BLOCKED_EQUIPMENT_STATUSES = new Set(['de_baja', 'retirado', 'retired']);
 
@@ -60,6 +61,13 @@ export class ScheduleEditComponent implements OnInit {
       equipments: this.equipmentsService.getAll(),
     }).subscribe({
       next: ({ schedule, clients, equipments }) => {
+        if (!isEditableSchedule(schedule)) {
+          void this.router.navigate(['/schedule/detail', this.scheduleId], {
+            state: { errorMessage: 'El cronograma ya no se puede editar porque su estado actual es solo lectura.' },
+          });
+          return;
+        }
+
         this.clients = clients;
         this.equipments = equipments;
         this.form = {

@@ -9,6 +9,13 @@ import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { OrdersService } from '../../../core/services/orders.service';
 import { UsersService } from '../../../core/services/users.service';
+import {
+  canAssignOrder,
+  canCancelOrder,
+  canCompleteOrder,
+  canStartOrder,
+  isEditableOrder,
+} from '../../../core/utils/operational-rules';
 
 @Component({
   selector: 'app-pending-orders',
@@ -142,6 +149,30 @@ export class OrdersListComponent implements OnInit {
       next: () => this.loadOrders(),
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible anular la orden.'),
     });
+  }
+
+  private isTechnician(): boolean {
+    return this.authService.role() === 'tecnico';
+  }
+
+  canEditOrder(order: OrderVm): boolean {
+    return isEditableOrder(order) && this.authService.canAccess('orders', 'update');
+  }
+
+  canAssignOrder(order: OrderVm): boolean {
+    return canAssignOrder(order) && this.authService.canAccess('orders', 'assign');
+  }
+
+  canStartOrder(order: OrderVm): boolean {
+    return this.authService.canAccess('orders', 'start') && canStartOrder(order, this.authService.user(), this.isTechnician());
+  }
+
+  canCompleteOrder(order: OrderVm): boolean {
+    return this.authService.canAccess('orders', 'complete') && canCompleteOrder(order, this.authService.user(), this.isTechnician());
+  }
+
+  canCancelOrder(order: OrderVm): boolean {
+    return canCancelOrder(order) && this.authService.canAccess('orders', 'cancel');
   }
 
   formatStatus(status: string | null): string {

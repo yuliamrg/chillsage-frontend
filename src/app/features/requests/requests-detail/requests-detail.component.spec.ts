@@ -61,4 +61,21 @@ describe('RequestsDetailComponent', () => {
 
     expect(requestsService.cancel).not.toHaveBeenCalled();
   });
+
+  it('no permite anular una solicitud con orden asociada', () => {
+    component.request = { id: 9, status: 'pending', orderId: 33, reviewNotes: null } as any;
+
+    component.cancelRequest();
+
+    expect(requestsService.cancel).not.toHaveBeenCalled();
+  });
+
+  it('muestra crear orden solo para approved sin orden asociada', () => {
+    component.request = { id: 9, status: 'approved', orderId: null, reviewNotes: null } as any;
+
+    expect(component.canCreateOrder()).toBeTrue();
+
+    component.request = { id: 9, status: 'approved', orderId: 77, reviewNotes: null } as any;
+    expect(component.canCreateOrder()).toBeFalse();
+  });
 });

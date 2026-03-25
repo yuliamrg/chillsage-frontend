@@ -7,6 +7,7 @@ import { OrderFormValue, RequestVm, UserVm } from '../../../core/models/domain.m
 import { OrdersService } from '../../../core/services/orders.service';
 import { RequestsService } from '../../../core/services/requests.service';
 import { UsersService } from '../../../core/services/users.service';
+import { isEditableOrder } from '../../../core/utils/operational-rules';
 
 @Component({
   selector: 'app-orders-edit',
@@ -44,6 +45,13 @@ export class OrdersEditComponent implements OnInit {
       users: this.usersService.getAll(),
     }).subscribe({
       next: ({ order, requests, users }) => {
+        if (!isEditableOrder(order)) {
+          void this.router.navigate(['/orders/detail', this.orderId], {
+            state: { errorMessage: 'La orden ya no se puede editar porque su estado actual es solo lectura.' },
+          });
+          return;
+        }
+
         this.requests = requests;
         this.technicians = users.filter((user) => (user.roleName ?? '').toLowerCase() === 'tecnico' || user.roleId === 4);
         this.form = {
@@ -66,6 +74,7 @@ export class OrdersEditComponent implements OnInit {
       return;
     }
 
+    this.errorMessage = '';
     this.isSaving = true;
     this.ordersService.update(this.orderId, this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({
       next: () => void this.router.navigate(['/orders/list']),

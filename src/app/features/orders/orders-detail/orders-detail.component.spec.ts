@@ -9,13 +9,19 @@ describe('OrdersDetailComponent', () => {
   let fixture: any;
   let component: OrdersDetailComponent;
   let ordersService: jasmine.SpyObj<OrdersService>;
+  let authService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
     ordersService = jasmine.createSpyObj<OrdersService>('OrdersService', ['getById', 'start', 'complete', 'cancel']);
+    authService = jasmine.createSpyObj<AuthService>('AuthService', ['canAccess', 'role', 'user']);
+    authService.canAccess.and.returnValue(true);
+    authService.role.and.returnValue('planeador');
+    authService.user.and.returnValue({ id: 99, roleId: 3, roleName: 'planeador' } as any);
     ordersService.getById.and.returnValue(
       of({
         id: 14,
         status: 'assigned',
+        assignedUserId: 4,
         workedHours: null,
         finishedAt: null,
         closureNotes: null,
@@ -29,7 +35,7 @@ describe('OrdersDetailComponent', () => {
       providers: [
         provideRouter([]),
         { provide: OrdersService, useValue: ordersService },
-        { provide: AuthService, useValue: jasmine.createSpyObj<AuthService>('AuthService', ['canAccess']) },
+        { provide: AuthService, useValue: authService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '14' } } } },
       ],
     }).compileComponents();
@@ -70,5 +76,25 @@ describe('OrdersDetailComponent', () => {
 
     expect(ordersService.cancel).toHaveBeenCalledWith(14, { cancelReason: 'Sin acceso' });
     expect(component.order?.status).toBe('cancelled');
+  });
+
+  it('bloquea iniciar para tecnico no asignado', () => {
+    authService.role.and.returnValue('tecnico');
+    authService.user.and.returnValue({ id: 8, roleId: 4, roleName: 'tecnico' } as any);
+
+    component.startOrder();
+
+    expect(ordersService.start).not.toHaveBeenCalled();
+  });
+
+  it('oculta acciones de tecnico cuando la orden no le pertenece', () => {
+    authService.role.and.returnValue('tecnico');
+    authService.user.and.returnValue({ id: 8, roleId: 4, roleName: 'tecnico' } as any);
+
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).not.toContain('Iniciar');
+    expect(text).toContain('Anular');
   });
 });

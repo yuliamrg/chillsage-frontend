@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ScheduleVm } from '../../../core/models/domain.models';
 import { SchedulesService } from '../../../core/services/schedules.service';
+import { canCloseSchedule, canOpenSchedule, isEditableSchedule } from '../../../core/utils/operational-rules';
 
 const formatDateTime = (value: string | null): string => {
   if (!value) {
@@ -31,6 +32,7 @@ export class ScheduleDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const scheduleId = Number(this.route.snapshot.paramMap.get('id'));
+    this.errorMessage = history.state?.errorMessage ?? '';
     this.loadSchedule(scheduleId);
   }
 
@@ -43,15 +45,15 @@ export class ScheduleDetailComponent implements OnInit {
   }
 
   canEdit(): boolean {
-    return !!this.schedule && this.schedule.status !== 'closed' && this.authService.canAccess('schedules', 'update');
+    return isEditableSchedule(this.schedule) && this.authService.canAccess('schedules', 'update');
   }
 
   canOpen(): boolean {
-    return !!this.schedule && this.schedule.status === 'unassigned' && this.authService.canAccess('schedules', 'open');
+    return canOpenSchedule(this.schedule) && this.authService.canAccess('schedules', 'open');
   }
 
   canClose(): boolean {
-    return !!this.schedule && this.schedule.status === 'open' && this.authService.canAccess('schedules', 'close');
+    return canCloseSchedule(this.schedule) && this.authService.canAccess('schedules', 'close');
   }
 
   formatScheduledDate(value: string | null): string {

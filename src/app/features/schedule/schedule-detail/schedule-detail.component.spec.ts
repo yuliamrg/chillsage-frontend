@@ -51,4 +51,12 @@ describe('ScheduleDetailComponent', () => {
     expect(schedulesService.open).toHaveBeenCalledWith(8, {});
     expect(component.schedule?.status).toBe('open');
   });
+
+  it('bloquea edicion y acciones cuando el cronograma esta cerrado', () => {
+    component.schedule = { id: 8, status: 'closed' } as any;
+
+    expect(component.canEdit()).toBeFalse();
+    expect(component.canOpen()).toBeFalse();
+    expect(component.canClose()).toBeFalse();
+  });
 });

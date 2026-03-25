@@ -99,10 +99,10 @@
                   <td>{{ request.orderId || '-' }}</td>
                   <td>
                     <a class="btn btn-info btn-sm mr-1" [routerLink]="['/requests/detail', request.id]">Ver</a>
-                    <a class="btn btn-warning btn-sm mr-1" *ngIf="canUpdateRequests()" [routerLink]="['/requests/edit', request.id]">Editar</a>
-                    <a class="btn btn-primary btn-sm mr-1" *ngIf="request.status === 'approved' && !request.orderId && authService.canAccess('orders', 'create')" [routerLink]="['/orders/new']" [queryParams]="{ requestId: request.id }">Crear orden</a>
-                    <button type="button" class="btn btn-success btn-sm mr-1" *ngIf="request.status === 'pending' && canApproveRequests()" (click)="approveRequest(request)">Aprobar</button>
-                    <button type="button" class="btn btn-danger btn-sm mr-1" *ngIf="request.status === 'pending' && canCancelRequests()" (click)="cancelRequest(request)">Anular</button>
+                    <a class="btn btn-warning btn-sm mr-1" *ngIf="canEditRequest(request)" [routerLink]="['/requests/edit', request.id]">Editar</a>
+                    <a class="btn btn-primary btn-sm mr-1" *ngIf="canCreateOrder(request)" [routerLink]="['/orders/new']" [queryParams]="{ requestId: request.id }">Crear orden</a>
+                    <button type="button" class="btn btn-success btn-sm mr-1" *ngIf="canApproveRequest(request)" (click)="approveRequest(request)">Aprobar</button>
+                    <button type="button" class="btn btn-danger btn-sm mr-1" *ngIf="canCancelRequest(request)" (click)="cancelRequest(request)">Anular</button>
                     <button type="button" class="btn btn-outline-danger btn-sm" *ngIf="canDeleteRequests()" (click)="removeRequest(request.id)">Eliminar</button>
                   </td>
                 </tr>

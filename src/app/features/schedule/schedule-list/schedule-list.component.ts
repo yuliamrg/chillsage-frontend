@@ -7,6 +7,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ClientVm, ScheduleFilters, ScheduleVm } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 import { SchedulesService } from '../../../core/services/schedules.service';
+import { canCloseSchedule, canOpenSchedule, isEditableSchedule } from '../../../core/utils/operational-rules';
 
 const formatDateTime = (value: string | null): string => {
   if (!value) {
@@ -67,15 +68,15 @@ export class ScheduleListComponent implements OnInit {
   }
 
   canEdit(schedule: ScheduleVm): boolean {
-    return schedule.status !== 'closed' && this.authService.canAccess('schedules', 'update');
+    return isEditableSchedule(schedule) && this.authService.canAccess('schedules', 'update');
   }
 
   canOpen(schedule: ScheduleVm): boolean {
-    return schedule.status === 'unassigned' && this.authService.canAccess('schedules', 'open');
+    return canOpenSchedule(schedule) && this.authService.canAccess('schedules', 'open');
   }
 
   canClose(schedule: ScheduleVm): boolean {
-    return schedule.status === 'open' && this.authService.canAccess('schedules', 'close');
+    return canCloseSchedule(schedule) && this.authService.canAccess('schedules', 'close');
   }
 
   formatScheduledDate(value: string | null): string {

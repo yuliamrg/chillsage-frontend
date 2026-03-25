@@ -54,4 +54,9 @@ describe('ScheduleListComponent', () => {
     expect(component.formatStatus('open')).toBe('Abierto');
     expect(component.formatStatus('closed')).toBe('Cerrado');
   });
+
+  it('no permite cerrar desde unassigned ni abrir desde closed', () => {
+    expect(component.canClose({ id: 1, status: 'unassigned' } as any)).toBeFalse();
+    expect(component.canOpen({ id: 1, status: 'closed' } as any)).toBeFalse();
+  });
 });
