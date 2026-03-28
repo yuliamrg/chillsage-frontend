@@ -1,6 +1,6 @@
 # Git Workflow
 
-Este proyecto debe manejarse con un flujo de ramas corto, commits pequenos y validaciones locales antes de integrar cambios. La idea es mantener el historial legible y reducir merge conflicts innecesarios.
+Este proyecto usa un flujo de ramas corto, commits pequenos y validacion local antes de integrar cambios.
 
 ## Regla general
 
@@ -43,8 +43,6 @@ Reglas:
 - Si el cambio es grande, agregar cuerpo explicando contexto y riesgo.
 
 ## Flujo recomendado
-
-### Caso general
 
 1. Actualizar `main` local:
 
@@ -94,48 +92,6 @@ git commit -m "feat: descripcion breve"
 
 8. Integrar cambios a `main`.
 
-## Flujo explicito para trabajo individual
-
-Si estas trabajando solo en este repositorio, la forma esperada de trabajar sigue siendo con rama de feature primero y merge a `main` al final. El hecho de trabajar solo no cambia eso; solo evita la necesidad de PR si no lo necesitas.
-
-Secuencia recomendada:
-
-1. Crear y trabajar en una rama:
-
-```bash
-git checkout -b feat/nombre-del-cambio
-```
-
-2. Hacer commits en esa rama.
-
-3. Validar:
-
-```bash
-pnpm run test:headless
-pnpm run build
-```
-
-4. Pasar los cambios a `main` local:
-
-```bash
-git checkout main
-git merge --ff-only feat/nombre-del-cambio
-```
-
-Si `--ff-only` no aplica porque `main` avanzo o hiciste commits adicionales en ambos lados, entonces usar:
-
-```bash
-git merge feat/nombre-del-cambio
-```
-
-5. Opcionalmente, borrar la rama si ya no se necesita:
-
-```bash
-git branch -d feat/nombre-del-cambio
-```
-
-En este proyecto, cuando trabajas solo, esa es la forma correcta de pasar cambios a `main`.
-
 ## Que evitar
 
 - Commits como `cambios`, `fix`, `update`, `prueba`.
@@ -156,6 +112,6 @@ En este proyecto, cuando trabajas solo, esa es la forma correcta de pasar cambio
 ## Politica practica para este repo
 
 - Priorizar ramas pequenas y frecuentes.
-- Documentar cualquier cambio estructural en `README.md`.
+- Documentar onboarding en `README.md` y detalle durable en `docs/`.
 - Si se agrega tooling nuevo, justificarlo en el PR o en la documentacion.
-- Si un cambio reduce deuda tecnica, dejar explicito que dependencia o comportamiento heredado se elimino.
+- Si cambia el contrato del backend hermano, sincronizar tambien `docs/api-contract.md`.

@@ -37,11 +37,12 @@ This repo is the Angular 17 admin frontend for Chillsage. Keep docs short, opera
 - Do not commit directly to `main`.
 - Use short-lived branches such as `feat/requests-form-validation` or `fix/sidebar-navigation-toggle`.
 - Follow Conventional Commits with concise imperative subjects.
-- PRs should describe the visible change, mention backend contract changes in `../chillsage-backend`, list validations run, and include screenshots for UI changes.
+- PRs should describe the visible change, mention backend contract changes in `../chill-sage-backend`, list validations run, and include screenshots for UI changes.
 
 ## Backend Contract
 When backend payloads or endpoints change, update the frontend in the same work item:
 
+- source of truth lives in `../chill-sage-backend/docs/contracts/`
 - `src/app/core/models/domain.models.ts`
 - `src/app/core/mappers/domain.mappers.ts`
 - the affected files in `src/app/core/api/` and `src/app/core/auth/`
