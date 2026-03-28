@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { ApiClientService } from '../api/api-client.service';
+import { DEFAULT_LOOKUP_LIMIT, mapPaginatedCollectionResponse } from '../api/pagination.utils';
 import {
   mapSchedule,
   mapScheduleCloseFormToApi,
@@ -8,6 +9,7 @@ import {
   mapScheduleOpenFormToApi,
 } from '../mappers/domain.mappers';
 import {
+  CollectionQuery,
   ScheduleCloseFormValue,
   ScheduleFilters,
   ScheduleFormValue,
@@ -18,16 +20,23 @@ import {
 export class SchedulesService {
   private readonly api = inject(ApiClientService);
 
-  getAll(filters?: ScheduleFilters) {
+  list(query?: ScheduleFilters & CollectionQuery) {
     return this.api
-      .get<{ schedules: unknown[] }>('/schedules', {
-        client_id: filters?.clientId,
-        status: filters?.status,
-        type: filters?.type,
-        date_from: filters?.dateFrom,
-        date_to: filters?.dateTo,
+      .get<{ schedules: unknown[]; meta?: unknown }>('/schedules', {
+        client_id: query?.clientId,
+        status: query?.status,
+        type: query?.type,
+        date_from: query?.dateFrom,
+        date_to: query?.dateTo,
+        page: query?.page,
+        limit: query?.limit,
+        sort: query?.sort,
       })
-      .pipe(map((response) => (response.schedules ?? []).map(mapSchedule)));
+      .pipe(map((response) => mapPaginatedCollectionResponse(response, 'schedules', mapSchedule)));
+  }
+
+  getAll(filters?: ScheduleFilters) {
+    return this.list({ ...filters, limit: DEFAULT_LOOKUP_LIMIT }).pipe(map((response) => response.items));
   }
 
   getById(id: number) {

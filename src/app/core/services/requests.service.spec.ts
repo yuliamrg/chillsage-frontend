@@ -20,7 +20,7 @@ describe('RequestsService', () => {
     service = TestBed.inject(RequestsService);
   });
 
-  it('consulta requests con filtros y mapea la respuesta', () => {
+  it('consulta requests paginados con filtros y mapea la respuesta', () => {
     api.get.and.returnValue(
       of({
         requests: [
@@ -45,12 +45,23 @@ describe('RequestsService', () => {
             updated_at: '2026-03-20T10:30:00.000Z',
           },
         ],
+        meta: {
+          pagination: {
+            page: 2,
+            limit: 10,
+            total: 42,
+            total_pages: 5,
+            returned: 1,
+            has_next_page: true,
+            has_previous_page: true,
+          },
+        },
       })
     );
 
-    let result: any[] = [];
+    let result: any;
     service
-      .getAll({ clientId: 3, requesterUserId: 7, equipmentId: 11, status: 'approved', type: 'corrective' })
+      .list({ clientId: 3, requesterUserId: 7, equipmentId: 11, status: 'approved', type: 'corrective', page: 2, limit: 10 })
       .subscribe((value) => (result = value));
 
     expect(api.get).toHaveBeenCalledWith('/requests', {
@@ -61,8 +72,12 @@ describe('RequestsService', () => {
       type: 'corrective',
       date_from: undefined,
       date_to: undefined,
+      page: 2,
+      limit: 10,
+      sort: undefined,
     });
-    expect(result[0]).toEqual(
+    expect(result.pagination.total).toBe(42);
+    expect(result.items[0]).toEqual(
       jasmine.objectContaining({
         id: 9,
         clientId: 3,

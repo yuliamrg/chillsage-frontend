@@ -1,15 +1,26 @@
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
+import { DEFAULT_LOOKUP_LIMIT, mapPaginatedCollectionResponse } from '../api/pagination.utils';
 import { ApiClientService } from '../api/api-client.service';
 import { mapClient, mapClientFormToApi } from '../mappers/domain.mappers';
-import { ClientFormValue, ClientVm } from '../models/domain.models';
+import { ClientFormValue, CollectionQuery } from '../models/domain.models';
 
 @Injectable({ providedIn: 'root' })
 export class ClientsService {
   private readonly api = inject(ApiClientService);
 
+  list(query?: CollectionQuery) {
+    return this.api
+      .get<{ clients: unknown[]; meta?: unknown }>('/clients', {
+        page: query?.page,
+        limit: query?.limit,
+        sort: query?.sort,
+      })
+      .pipe(map((response) => mapPaginatedCollectionResponse(response, 'clients', mapClient)));
+  }
+
   getAll() {
-    return this.api.get<{ clients: unknown[] }>('/clients').pipe(map((response) => (response.clients ?? []).map(mapClient)));
+    return this.list({ limit: DEFAULT_LOOKUP_LIMIT }).pipe(map((response) => response.items));
   }
 
   getById(id: number) {

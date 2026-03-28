@@ -3,8 +3,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { createDefaultPagination } from '../../../core/api/pagination.utils';
 import { AuthService } from '../../../core/auth/auth.service';
-import { ClientVm, EquipmentVm, OrderFilters, OrderVm, UserVm } from '../../../core/models/domain.models';
+import { ClientVm, EquipmentVm, OrderFilters, OrderVm, PaginationVm, UserVm } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { OrdersService } from '../../../core/services/orders.service';
@@ -35,7 +36,9 @@ export class OrdersListComponent implements OnInit {
   clients: ClientVm[] = [];
   equipments: EquipmentVm[] = [];
   technicians: UserVm[] = [];
+  pagination: PaginationVm = createDefaultPagination();
   errorMessage = '';
+  readonly pageSizeOptions = [10, 25, 50, 100];
   filters: OrderFilters = {
     clientId: null,
     equipmentId: null,
@@ -63,9 +66,31 @@ export class OrdersListComponent implements OnInit {
   }
 
   loadOrders(): void {
+    const ordersService = this.ordersService as any;
+
+    if (typeof ordersService.list === 'function') {
+      ordersService.list({ ...this.filters, page: this.pagination.page, limit: this.pagination.limit }).subscribe({
+        next: (response: any) => {
+          this.orders = response.items;
+          this.pagination = response.pagination;
+          this.errorMessage = '';
+        },
+        error: (error: any) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible cargar ordenes.'),
+      });
+      return;
+    }
+
     this.ordersService.getAll(this.filters).subscribe({
       next: (orders) => {
         this.orders = orders;
+        this.pagination = {
+          ...this.pagination,
+          total: orders.length,
+          totalPages: orders.length ? 1 : 0,
+          returned: orders.length,
+          hasNextPage: false,
+          hasPreviousPage: false,
+        };
         this.errorMessage = '';
       },
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible cargar ordenes.'),
@@ -82,6 +107,7 @@ export class OrdersListComponent implements OnInit {
       dateFrom: null,
       dateTo: null,
     };
+    this.pagination = { ...this.pagination, page: 1 };
     this.loadOrders();
   }
 
@@ -173,6 +199,34 @@ export class OrdersListComponent implements OnInit {
 
   canCancelOrder(order: OrderVm): boolean {
     return canCancelOrder(order) && this.authService.canAccess('orders', 'cancel');
+  }
+
+  applyFilters(): void {
+    this.pagination = { ...this.pagination, page: 1 };
+    this.loadOrders();
+  }
+
+  onPageSizeChange(): void {
+    this.pagination = { ...this.pagination, page: 1 };
+    this.loadOrders();
+  }
+
+  goToPreviousPage(): void {
+    if (!this.pagination.hasPreviousPage) {
+      return;
+    }
+
+    this.pagination = { ...this.pagination, page: this.pagination.page - 1 };
+    this.loadOrders();
+  }
+
+  goToNextPage(): void {
+    if (!this.pagination.hasNextPage) {
+      return;
+    }
+
+    this.pagination = { ...this.pagination, page: this.pagination.page + 1 };
+    this.loadOrders();
   }
 
   formatStatus(status: string | null): string {

@@ -20,7 +20,7 @@ describe('SchedulesService', () => {
     service = TestBed.inject(SchedulesService);
   });
 
-  it('consulta schedules con filtros y mapea la respuesta', () => {
+  it('consulta schedules paginados con filtros y mapea la respuesta', () => {
     api.get.and.returnValue(
       of({
         schedules: [
@@ -37,11 +37,22 @@ describe('SchedulesService', () => {
             equipments: [{ id: 22, name: 'Chiller piso 3', code: 'EQ-003' }],
           },
         ],
+        meta: {
+          pagination: {
+            page: 3,
+            limit: 5,
+            total: 12,
+            total_pages: 3,
+            returned: 1,
+            has_next_page: false,
+            has_previous_page: true,
+          },
+        },
       })
     );
 
-    let result: any[] = [];
-    service.getAll({ clientId: 3, status: 'unassigned', type: 'preventive' }).subscribe((value) => (result = value));
+    let result: any;
+    service.list({ clientId: 3, status: 'unassigned', type: 'preventive', page: 3, limit: 5 }).subscribe((value) => (result = value));
 
     expect(api.get).toHaveBeenCalledWith('/schedules', {
       client_id: 3,
@@ -49,8 +60,12 @@ describe('SchedulesService', () => {
       type: 'preventive',
       date_from: undefined,
       date_to: undefined,
+      page: 3,
+      limit: 5,
+      sort: undefined,
     });
-    expect(result[0]).toEqual(
+    expect(result.pagination.total).toBe(12);
+    expect(result.items[0]).toEqual(
       jasmine.objectContaining({
         id: 8,
         clientId: 3,

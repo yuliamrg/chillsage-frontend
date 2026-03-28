@@ -3,6 +3,27 @@ export interface RoleVm {
   description: string;
 }
 
+export interface PaginationVm {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  returned: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface SortVm {
+  field: string | null;
+  direction: string | null;
+}
+
+export interface PaginatedVm<T> {
+  items: T[];
+  pagination: PaginationVm;
+  sort: SortVm | null;
+}
+
 export interface ClientVm {
   id: number;
   name: string;
@@ -211,6 +232,12 @@ export interface OrderCancelFormValue {
 export interface ScheduleOpenFormValue {}
 
 export interface ScheduleCloseFormValue {}
+
+export interface CollectionQuery {
+  page?: number | null;
+  limit?: number | null;
+  sort?: string | null;
+}
 
 export interface RequestFilters {
   clientId?: number | null;

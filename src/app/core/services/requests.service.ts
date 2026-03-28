@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { ApiClientService } from '../api/api-client.service';
+import { DEFAULT_LOOKUP_LIMIT, mapPaginatedCollectionResponse } from '../api/pagination.utils';
 import {
   mapRequest,
   mapRequestApprovalFormToApi,
@@ -8,6 +9,7 @@ import {
   mapRequestFormToApi,
 } from '../mappers/domain.mappers';
 import {
+  CollectionQuery,
   RequestApprovalFormValue,
   RequestCancelFormValue,
   RequestFilters,
@@ -18,18 +20,25 @@ import {
 export class RequestsService {
   private readonly api = inject(ApiClientService);
 
-  getAll(filters?: RequestFilters) {
+  list(query?: RequestFilters & CollectionQuery) {
     return this.api
-      .get<{ requests: unknown[] }>('/requests', {
-        client_id: filters?.clientId,
-        requester_user_id: filters?.requesterUserId,
-        equipment_id: filters?.equipmentId,
-        status: filters?.status,
-        type: filters?.type,
-        date_from: filters?.dateFrom,
-        date_to: filters?.dateTo,
+      .get<{ requests: unknown[]; meta?: unknown }>('/requests', {
+        client_id: query?.clientId,
+        requester_user_id: query?.requesterUserId,
+        equipment_id: query?.equipmentId,
+        status: query?.status,
+        type: query?.type,
+        date_from: query?.dateFrom,
+        date_to: query?.dateTo,
+        page: query?.page,
+        limit: query?.limit,
+        sort: query?.sort,
       })
-      .pipe(map((response) => (response.requests ?? []).map(mapRequest)));
+      .pipe(map((response) => mapPaginatedCollectionResponse(response, 'requests', mapRequest)));
+  }
+
+  getAll(filters?: RequestFilters) {
+    return this.list({ ...filters, limit: DEFAULT_LOOKUP_LIMIT }).pipe(map((response) => response.items));
   }
 
   getById(id: number) {

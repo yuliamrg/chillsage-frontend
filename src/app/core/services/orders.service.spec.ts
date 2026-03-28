@@ -20,7 +20,7 @@ describe('OrdersService', () => {
     service = TestBed.inject(OrdersService);
   });
 
-  it('consulta orders con filtros y mapea la respuesta', () => {
+  it('consulta orders paginadas con filtros y mapea la respuesta', () => {
     api.get.and.returnValue(
       of({
         orders: [
@@ -42,12 +42,23 @@ describe('OrdersService', () => {
             updated_at: '2026-03-22T10:30:00.000Z',
           },
         ],
+        meta: {
+          pagination: {
+            page: 1,
+            limit: 25,
+            total: 30,
+            total_pages: 2,
+            returned: 1,
+            has_next_page: true,
+            has_previous_page: false,
+          },
+        },
       })
     );
 
-    let result: any[] = [];
+    let result: any;
     service
-      .getAll({ clientId: 3, equipmentId: 11, assignedUserId: 21, status: 'assigned', type: 'corrective' })
+      .list({ clientId: 3, equipmentId: 11, assignedUserId: 21, status: 'assigned', type: 'corrective', page: 1, limit: 25 })
       .subscribe((value) => (result = value));
 
     expect(api.get).toHaveBeenCalledWith('/orders', {
@@ -58,8 +69,12 @@ describe('OrdersService', () => {
       type: 'corrective',
       date_from: undefined,
       date_to: undefined,
+      page: 1,
+      limit: 25,
+      sort: undefined,
     });
-    expect(result[0]).toEqual(
+    expect(result.pagination.total).toBe(30);
+    expect(result.items[0]).toEqual(
       jasmine.objectContaining({
         id: 14,
         requestId: 9,

@@ -1,15 +1,26 @@
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
+import { DEFAULT_LOOKUP_LIMIT, mapPaginatedCollectionResponse } from '../api/pagination.utils';
 import { ApiClientService } from '../api/api-client.service';
 import { mapEquipment, mapEquipmentFormToApi } from '../mappers/domain.mappers';
-import { EquipmentFormValue } from '../models/domain.models';
+import { CollectionQuery, EquipmentFormValue } from '../models/domain.models';
 
 @Injectable({ providedIn: 'root' })
 export class EquipmentsService {
   private readonly api = inject(ApiClientService);
 
+  list(query?: CollectionQuery) {
+    return this.api
+      .get<{ equipments: unknown[]; meta?: unknown }>('/equipments', {
+        page: query?.page,
+        limit: query?.limit,
+        sort: query?.sort,
+      })
+      .pipe(map((response) => mapPaginatedCollectionResponse(response, 'equipments', mapEquipment)));
+  }
+
   getAll() {
-    return this.api.get<{ equipments: unknown[] }>('/equipments').pipe(map((response) => (response.equipments ?? []).map(mapEquipment)));
+    return this.list({ limit: DEFAULT_LOOKUP_LIMIT }).pipe(map((response) => response.items));
   }
 
   getById(id: number) {
