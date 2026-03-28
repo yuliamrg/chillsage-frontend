@@ -47,11 +47,12 @@ describe('authInterceptor', () => {
 
     const request = httpMock.expectOne(`${API_BASE_URL}/users`);
     expect(request.request.headers.get('Authorization')).toBe('Bearer jwt-token');
+    expect(request.request.headers.has('X-Request-Id')).toBeTrue();
 
     request.flush({ data: [] });
   });
 
-  it('no agrega authorization en /users/login', () => {
+  it('no agrega authorization en /users/login y conserva correlacion', () => {
     authService.accessToken.and.returnValue('jwt-token');
 
     httpClient.post(`${API_BASE_URL}/users/login`, {
@@ -61,6 +62,7 @@ describe('authInterceptor', () => {
 
     const request = httpMock.expectOne(`${API_BASE_URL}/users/login`);
     expect(request.request.headers.has('Authorization')).toBeFalse();
+    expect(request.request.headers.has('X-Request-Id')).toBeTrue();
 
     request.flush({ status: true });
   });
@@ -72,6 +74,7 @@ describe('authInterceptor', () => {
 
     const request = httpMock.expectOne(`${API_BASE_URL}/requests`);
     expect(request.request.headers.has('Authorization')).toBeFalse();
+    expect(request.request.headers.has('X-Request-Id')).toBeTrue();
 
     request.flush({ data: [] });
   });

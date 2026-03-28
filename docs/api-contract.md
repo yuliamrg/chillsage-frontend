@@ -12,8 +12,14 @@ Si hay divergencia entre este archivo y el backend, prevalece el backend.
 ## Base URL
 
 ```text
-http://localhost:3037/api
+http://localhost:<PORT>/api
 ```
+
+Notas:
+
+- el backend usa `PORT` configurable y por defecto `3000`
+- el frontend puede sobrescribir la URL base en runtime con `window.__CHILLSAGE_API_BASE_URL__`
+- si no se define override, este proyecto conserva el fallback local `http://localhost:3037/api`
 
 ## Autenticacion
 
@@ -69,6 +75,9 @@ Respuesta esperada:
 
 - `401` fuera de login: limpiar sesion y redirigir a `/login?reason=expired`
 - `403` fuera de login: redirigir a `/access-denied`
+- `429` en login: mostrar mensaje estable de reintento
+- `500`: no depender de detalles internos del backend; usar mensaje generico
+- el backend responde `X-Request-Id` y el frontend envia ese header en requests API para correlacion
 
 ## Roles y permisos consumidos por el frontend
 

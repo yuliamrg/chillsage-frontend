@@ -1,58 +1,30 @@
-import { existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import browserPaths from './browser-paths.cjs';
 
-const browserCandidates = [
-  {
-    launcher: 'ChromeHeadless',
-    envKey: 'CHROME_BIN',
-    binaries: [
-      process.env.CHROME_BIN,
-      '/usr/bin/google-chrome',
-      '/usr/bin/google-chrome-stable',
-      '/usr/bin/chromium',
-      '/usr/bin/chromium-browser',
-      '/usr/local/bin/google-chrome',
-      '/usr/local/bin/chromium',
-    ].filter(Boolean),
-  },
-  {
-    launcher: 'FirefoxHeadless',
-    envKey: 'FIREFOX_BIN',
-    binaries: [process.env.FIREFOX_BIN, '/usr/bin/firefox', '/usr/local/bin/firefox'].filter(Boolean),
-  },
-];
+const chromeBinary = browserPaths.ensureChromeBin();
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const ngBinary = path.resolve(currentDir, '..', 'node_modules', '.bin', 'ng');
 
-const findInstalledBrowser = () => {
-  for (const candidate of browserCandidates) {
-    const binary = candidate.binaries.find((path) => existsSync(path));
-    if (binary) {
-      return { ...candidate, binary };
-    }
-  }
-
-  return null;
-};
-
-const selectedBrowser = findInstalledBrowser();
-
-if (!selectedBrowser) {
+if (!chromeBinary) {
   console.error(
-    'No se encontro ningun navegador compatible para Karma. Instala Chrome/Chromium o Firefox, o define CHROME_BIN/FIREFOX_BIN.'
+    'No se encontro ningun Chrome/Chromium compatible para Karma. Instala uno del sistema o ejecuta `pnpm exec browsers install chrome@stable --path ./.cache/puppeteer`.'
   );
   process.exit(1);
 }
 
-const extraArgs = process.argv.slice(2);
+const extraArgs = process.argv.slice(2).filter((arg) => arg !== '--');
 const env = {
   ...process.env,
-  [selectedBrowser.envKey]: selectedBrowser.binary,
+  CHROME_BIN: chromeBinary,
 };
 
-console.log(`Usando ${selectedBrowser.launcher} con ${selectedBrowser.binary}`);
+console.log(`Usando ChromeHeadless con ${chromeBinary}`);
 
 const result = spawnSync(
-  'pnpm',
-  ['exec', 'ng', 'test', '--watch=false', `--browsers=${selectedBrowser.launcher}`, ...extraArgs],
+  ngBinary,
+  ['test', '--watch=false', '--browsers=ChromeHeadlessCI', ...extraArgs],
   {
     stdio: 'inherit',
     env,

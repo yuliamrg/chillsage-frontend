@@ -30,6 +30,7 @@ export class ApiClientService {
     const httpError = error as HttpErrorResponse;
     const payload = httpError?.error;
     const isServerError = (httpError?.status ?? 0) >= 500;
+    const requestId = httpError?.headers?.get('X-Request-Id') ?? undefined;
     const message =
       isServerError
         ? this.unexpectedServerErrorMessage
@@ -44,8 +45,10 @@ export class ApiClientService {
       error: {
         ...(typeof payload === 'object' && payload !== null ? payload : {}),
         msg: message,
+        ...(requestId ? { requestId } : {}),
       },
       message,
+      ...(requestId ? { requestId } : {}),
     }));
   }
 

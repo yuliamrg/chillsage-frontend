@@ -1,3 +1,7 @@
+const { ensureChromeBin } = require('./scripts/browser-paths.cjs');
+
+ensureChromeBin();
+
 // Karma configuration for Angular CLI test builder with explicit browser launchers.
 module.exports = function (config) {
   config.set({
@@ -28,7 +32,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    customLaunchers: {
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-dev-shm-usage'],
+      },
+    },
+    browsers: ['ChromeHeadlessCI'],
     singleRun: false,
     restartOnFileChange: true,
   });

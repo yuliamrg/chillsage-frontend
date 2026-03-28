@@ -7,20 +7,32 @@ import { AuthService } from './auth.service';
 
 const isApiRequest = (url: string): boolean => url.startsWith(API_BASE_URL);
 const isLoginRequest = (url: string): boolean => url === `${API_BASE_URL}/users/login`;
+const generateRequestId = (): string =>
+  globalThis.crypto?.randomUUID?.() ??
+  `req-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const token = authService.accessToken();
 
-  const request =
-    token && isApiRequest(req.url) && !isLoginRequest(req.url)
-      ? req.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-      : req;
+  let request = req;
+
+  if (isApiRequest(req.url) && !req.headers.has('X-Request-Id')) {
+    request = request.clone({
+      setHeaders: {
+        'X-Request-Id': generateRequestId(),
+      },
+    });
+  }
+
+  if (token && isApiRequest(req.url) && !isLoginRequest(req.url)) {
+    request = request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 
   return next(request).pipe(
     catchError((error: unknown) => {

@@ -53,6 +53,7 @@ http://localhost:4200/
 - `npm run build`: compila la aplicacion
 - `npm run watch`: compila en modo desarrollo con watch
 - `npm test`: ejecuta pruebas unitarias con Karma
+- `pnpm run browser:install`: descarga un Chrome local para Karma en `/.cache/puppeteer`
 
 ## Integracion con backend
 
@@ -70,6 +71,14 @@ Reglas de trabajo:
 - El frontend consume el contrato real del backend; no debe reinventarlo.
 - Si backend cambia endpoints, payloads, auth o relaciones enriquecidas, el frontend debe ajustarse en el mismo trabajo.
 - Ningun cambio de integracion se considera completo si solo compila frontend o solo backend.
+
+Notas operativas actuales:
+
+- el backend expone la API en `http://localhost:<PORT>/api`, con `3000` como default si `PORT` no existe
+- este frontend mantiene `http://localhost:3037/api` como fallback local, pero permite override en runtime con `window.__CHILLSAGE_API_BASE_URL__`
+- si el frontend corre en navegador, su origin debe estar incluido en `CORS_ORIGINS`
+- la capa HTTP propaga `X-Request-Id` para correlacion con logs del backend
+- Karma resuelve `CHROME_BIN` desde `/.cache/puppeteer` o desde un Chrome/Chromium del sistema
 
 Archivos que normalmente se revisan cuando cambia el contrato:
 

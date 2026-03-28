@@ -40,13 +40,21 @@ describe('ApiClientService', () => {
         message: 'SQLSTATE[08006]: connection failure',
         stack: 'stack trace interno',
       },
-      { status: 500, statusText: 'Server Error' }
+      {
+        status: 500,
+        statusText: 'Server Error',
+        headers: {
+          'X-Request-Id': 'req-500',
+        },
+      }
     );
 
     expect(responseError?.status).toBe(500);
     expect(responseError?.message).toBe('Ha ocurrido un error inesperado. Intenta nuevamente mas tarde.');
     expect(responseError?.error?.msg).toBe('Ha ocurrido un error inesperado. Intenta nuevamente mas tarde.');
     expect(responseError?.error?.stack).toBe('stack trace interno');
+    expect((responseError as any)?.requestId).toBe('req-500');
+    expect(responseError?.error?.requestId).toBe('req-500');
   });
 
   it('mantiene el mensaje contractual en errores no 500 como 429', () => {
