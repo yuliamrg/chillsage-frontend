@@ -84,6 +84,8 @@ export const mapEquipment = (equipment: any): EquipmentVm => ({
   clientName: equipment?.client_name ?? null,
   observations: equipment?.description ?? equipment?.observations ?? '',
   status: equipment?.status ?? '',
+  useStartAt: equipment?.use_start_at ?? null,
+  useEndAt: equipment?.use_end_at ?? null,
 });
 
 export const mapRequest = (request: any): RequestVm => ({
@@ -178,18 +180,20 @@ export const mapClientFormToApi = (value: ClientFormValue) => ({
   status: value.status,
 });
 
-export const mapEquipmentFormToApi = (value: EquipmentFormValue) => ({
-  name: value.name,
-  type: value.type,
-  location: value.location,
-  brand: value.brand,
-  model: value.model,
-  serial: value.serial,
-  code: value.fixedAssetCode,
-  alias: value.alias,
-  client: value.clientId,
-  description: value.observations,
-  status: value.status,
+export const mapEquipmentFormToApi = (value: Partial<EquipmentFormValue>) => ({
+  ...(value.name !== undefined ? { name: value.name } : {}),
+  ...(value.type !== undefined ? { type: value.type } : {}),
+  ...(value.location !== undefined ? { location: value.location } : {}),
+  ...(value.brand !== undefined ? { brand: value.brand } : {}),
+  ...(value.model !== undefined ? { model: value.model } : {}),
+  ...(value.serial !== undefined ? { serial: value.serial } : {}),
+  ...(value.fixedAssetCode !== undefined ? { code: value.fixedAssetCode } : {}),
+  ...(value.alias !== undefined ? { alias: value.alias } : {}),
+  ...(value.clientId !== undefined ? { client: value.clientId } : {}),
+  ...(value.observations !== undefined ? { description: value.observations } : {}),
+  ...(value.status !== undefined ? { status: value.status } : {}),
+  ...(value.useStartAt !== undefined ? { use_start_at: toApiDateTime(value.useStartAt) } : {}),
+  ...(value.useEndAt !== undefined ? { use_end_at: toApiDateTime(value.useEndAt) } : {}),
 });
 
 export const mapRequestFormToApi = (value: RequestFormValue) => ({

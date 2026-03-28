@@ -77,6 +77,14 @@
             </div>
             <div class="col-sm-6">
               <div class="form-group">
+                <label>Alias</label>
+                <input type="text" class="form-control" name="alias" [(ngModel)]="form.alias">
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-12">
+              <div class="form-group">
                 <label>Observaciones</label>
                 <textarea class="form-control" rows="3" name="observations" [(ngModel)]="form.observations"></textarea>
               </div>
@@ -95,7 +103,23 @@
                 <select class="form-control" name="status" [(ngModel)]="form.status">
                   <option value="active">Activo</option>
                   <option value="inactive">Inactivo</option>
+                  <option value="maintenance">Mantenimiento</option>
+                  <option value="retired">Retirado</option>
                 </select>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Inicio de uso</label>
+                <input type="datetime-local" class="form-control" name="useStartAt" [(ngModel)]="form.useStartAt">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Fin de uso</label>
+                <input type="datetime-local" class="form-control" name="useEndAt" [(ngModel)]="form.useEndAt">
               </div>
             </div>
           </div>

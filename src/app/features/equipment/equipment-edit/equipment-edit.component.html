@@ -27,13 +27,13 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Nombre</label>
-                <input type="text" class="form-control" name="name" [(ngModel)]="form.name" required>
+                <input type="text" class="form-control" name="name" [(ngModel)]="form.name" [disabled]="isPlanner" required>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Marca</label>
-                <input type="text" class="form-control" name="brand" [(ngModel)]="form.brand">
+                <input type="text" class="form-control" name="brand" [(ngModel)]="form.brand" [disabled]="isPlanner">
               </div>
             </div>
           </div>
@@ -41,13 +41,13 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Modelo</label>
-                <input type="text" class="form-control" name="model" [(ngModel)]="form.model">
+                <input type="text" class="form-control" name="model" [(ngModel)]="form.model" [disabled]="isPlanner">
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Serie</label>
-                <input type="text" class="form-control" name="serial" [(ngModel)]="form.serial" required>
+                <input type="text" class="form-control" name="serial" [(ngModel)]="form.serial" [disabled]="isPlanner" required>
               </div>
             </div>
           </div>
@@ -55,13 +55,13 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Activo fijo</label>
-                <input type="text" class="form-control" name="fixedAssetCode" [(ngModel)]="form.fixedAssetCode" required>
+                <input type="text" class="form-control" name="fixedAssetCode" [(ngModel)]="form.fixedAssetCode" [disabled]="isPlanner" required>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Cliente</label>
-                <select class="form-control" name="clientId" [(ngModel)]="form.clientId">
+                <select class="form-control" name="clientId" [(ngModel)]="form.clientId" [disabled]="isPlanner">
                   <option [ngValue]="null">Seleccione el cliente...</option>
                   <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
                 </select>
@@ -77,6 +77,14 @@
             </div>
             <div class="col-sm-6">
               <div class="form-group">
+                <label>Alias</label>
+                <input type="text" class="form-control" name="alias" [(ngModel)]="form.alias">
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-12">
+              <div class="form-group">
                 <label>Observaciones</label>
                 <textarea class="form-control" rows="3" name="observations" [(ngModel)]="form.observations"></textarea>
               </div>
@@ -86,7 +94,7 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Tipo</label>
-                <input type="text" class="form-control" name="type" [(ngModel)]="form.type">
+                <input type="text" class="form-control" name="type" [(ngModel)]="form.type" [disabled]="isPlanner">
               </div>
             </div>
             <div class="col-sm-6">
@@ -95,15 +103,36 @@
                 <select class="form-control" name="status" [(ngModel)]="form.status">
                   <option value="active">Activo</option>
                   <option value="inactive">Inactivo</option>
+                  <option value="maintenance">Mantenimiento</option>
+                  <option value="retired">Retirado</option>
                 </select>
               </div>
             </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Inicio de uso</label>
+                <input type="datetime-local" class="form-control" name="useStartAt" [(ngModel)]="form.useStartAt">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Fin de uso</label>
+                <input type="datetime-local" class="form-control" name="useEndAt" [(ngModel)]="form.useEndAt">
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mx-2 mb-0" *ngIf="isPlanner">
+            Como planeador solo puedes editar ubicacion, alias, observaciones, estado y rango de uso.
           </div>
           <div class="card-footer">
             <div class="row">
               <div class="col-sm-12 text-center">
                 <a routerLink="/equipment/list" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-warning ml-3">Guardar</button>
+                <button type="submit" class="btn btn-warning ml-3" [disabled]="isSaving">
+                  {{ isSaving ? 'Guardando...' : 'Guardar' }}
+                </button>
               </div>
             </div>
           </div>

@@ -1,4 +1,6 @@
 import {
+  mapEquipment,
+  mapEquipmentFormToApi,
   mapSchedule,
   mapScheduleCloseFormToApi,
   mapScheduleFormToApi,
@@ -6,6 +8,64 @@ import {
 } from './domain.mappers';
 
 describe('domain schedule mappers', () => {
+  it('mapea equipments con ventana de uso', () => {
+    const equipment = mapEquipment({
+      id: 5,
+      name: 'Chiller principal',
+      type: 'cooling',
+      location: 'Cuarto tecnico',
+      brand: 'Carrier',
+      model: '30XA',
+      serial: 'CH-30XA-001',
+      code: 'EQ-003',
+      alias: 'Principal',
+      client: 1,
+      client_name: 'Cliente Demo',
+      description: 'Equipo principal',
+      status: 'maintenance',
+      use_start_at: '2026-03-20T08:00:00.000Z',
+      use_end_at: '2026-03-30T18:00:00.000Z',
+    });
+
+    expect(equipment).toEqual({
+      id: 5,
+      name: 'Chiller principal',
+      type: 'cooling',
+      location: 'Cuarto tecnico',
+      brand: 'Carrier',
+      model: '30XA',
+      serial: 'CH-30XA-001',
+      fixedAssetCode: 'EQ-003',
+      alias: 'Principal',
+      clientId: 1,
+      clientName: 'Cliente Demo',
+      observations: 'Equipo principal',
+      status: 'maintenance',
+      useStartAt: '2026-03-20T08:00:00.000Z',
+      useEndAt: '2026-03-30T18:00:00.000Z',
+    });
+  });
+
+  it('serializa payload parcial de equipment sin campos de auditoria', () => {
+    const payload = mapEquipmentFormToApi({
+      alias: 'Equipo patio',
+      status: 'retired',
+      useStartAt: '2026-03-28T08:30',
+      useEndAt: '2026-03-28T10:30',
+    });
+
+    expect(payload).toEqual({
+      alias: 'Equipo patio',
+      status: 'retired',
+      use_start_at: new Date('2026-03-28T08:30').toISOString(),
+      use_end_at: new Date('2026-03-28T10:30').toISOString(),
+    });
+    expect(payload).not.toEqual(jasmine.objectContaining({
+      user_created_id: jasmine.anything(),
+      user_updated_id: jasmine.anything(),
+    }));
+  });
+
   it('mapea schedules con equipos resumidos y ids asociados', () => {
     const schedule = mapSchedule({
       id: 8,

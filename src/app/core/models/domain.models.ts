@@ -61,6 +61,8 @@ export interface EquipmentVm {
   clientName: string | null;
   observations: string;
   status: string;
+  useStartAt: string | null;
+  useEndAt: string | null;
 }
 
 export interface RequestVm {
@@ -168,6 +170,8 @@ export interface EquipmentFormValue {
   clientId: number | null;
   observations: string;
   status: string;
+  useStartAt: string | null;
+  useEndAt: string | null;
 }
 
 export interface RequestFormValue {

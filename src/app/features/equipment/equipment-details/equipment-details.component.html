@@ -68,14 +68,50 @@
           <div class="row mx-1">
             <div class="col-sm-6">
               <div class="form-group">
+                <label>Tipo</label>
+                <input type="text" class="form-control" [value]="equipment.type || '-'" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <input type="text" class="form-control" [value]="equipment.status || '-'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
                 <label>Ubicacion</label>
                 <input type="text" class="form-control" [value]="equipment.location || '-'" disabled>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
+                <label>Alias</label>
+                <input type="text" class="form-control" [value]="equipment.alias || '-'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-12">
+              <div class="form-group">
                 <label>Observaciones</label>
                 <textarea class="form-control" rows="3" [value]="equipment.observations || '-'" disabled></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Inicio de uso</label>
+                <input type="text" class="form-control" [value]="equipment.useStartAt || '-'" disabled>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Fin de uso</label>
+                <input type="text" class="form-control" [value]="equipment.useEndAt || '-'" disabled>
               </div>
             </div>
           </div>

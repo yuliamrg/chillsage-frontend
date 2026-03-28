@@ -31,7 +31,7 @@ export class EquipmentsService {
     return this.api.post<{ equipment: unknown }>('/equipments', mapEquipmentFormToApi(payload)).pipe(map((response) => mapEquipment(response.equipment)));
   }
 
-  update(id: number, payload: EquipmentFormValue) {
+  update(id: number, payload: Partial<EquipmentFormValue>) {
     return this.api.put<{ equipment: unknown }>(`/equipments/${id}`, mapEquipmentFormToApi(payload)).pipe(map((response) => mapEquipment(response.equipment)));
   }
 

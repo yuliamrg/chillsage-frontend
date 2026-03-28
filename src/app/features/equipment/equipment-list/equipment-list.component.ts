@@ -66,7 +66,7 @@ export class EquipmenListComponent implements OnInit {
   }
 
   canDeleteEquipments(): boolean {
-    return this.authService.canAccess('equipments', 'delete');
+    return this.authService.hasRole(['admin']) && this.authService.canAccess('equipments', 'delete');
   }
 
   onPageSizeChange(): void {

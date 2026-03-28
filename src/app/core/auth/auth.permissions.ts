@@ -3,6 +3,7 @@ import { AppAction, AppResource, AppRole } from './auth.models';
 type ResourcePermissions = Partial<Record<AppResource, AppAction[]>>;
 
 const fullCrud: AppAction[] = ['read', 'create', 'update', 'delete'];
+const createUpdateRead: AppAction[] = ['read', 'create', 'update'];
 const readOnly: AppAction[] = ['read'];
 const requestCreateRead: AppAction[] = ['read', 'create'];
 const requestManagement: AppAction[] = ['read', 'create', 'update', 'approve', 'cancel'];
@@ -29,7 +30,7 @@ const rolePermissions: Record<AppRole, ResourcePermissions> = {
     roles: readOnly,
     profiles: readOnly,
     clients: fullCrud,
-    equipments: fullCrud,
+    equipments: createUpdateRead,
     requests: requestManagement,
     orders: [...orderManagement, 'start', 'complete'],
     schedules: scheduleManagement,
