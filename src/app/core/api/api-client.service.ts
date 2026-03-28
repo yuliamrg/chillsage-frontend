@@ -6,6 +6,7 @@ import { API_BASE_URL } from './api.config';
 @Injectable({ providedIn: 'root' })
 export class ApiClientService {
   private readonly http = inject(HttpClient);
+  private readonly unexpectedServerErrorMessage = 'Ha ocurrido un error inesperado. Intenta nuevamente mas tarde.';
 
   private buildOptions(params?: Record<string, string | number | boolean | null | undefined>) {
     if (!params) {
@@ -28,10 +29,13 @@ export class ApiClientService {
   private normalizeError(error: unknown) {
     const httpError = error as HttpErrorResponse;
     const payload = httpError?.error;
+    const isServerError = (httpError?.status ?? 0) >= 500;
     const message =
-      payload?.msg ??
-      payload?.message ??
-      payload?.error ??
+      isServerError
+        ? this.unexpectedServerErrorMessage
+        : payload?.msg ??
+          payload?.message ??
+          payload?.error ??
       httpError?.message ??
       'Ha ocurrido un error al procesar la solicitud.';
 

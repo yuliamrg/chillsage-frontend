@@ -43,12 +43,20 @@ export class LoginComponent {
         this.router.navigateByUrl(returnUrl);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible iniciar sesion.';
+        this.errorMessage = this.resolveErrorMessage(error);
         this.isSubmitting = false;
       },
       complete: () => {
         this.isSubmitting = false;
       },
     });
+  }
+
+  private resolveErrorMessage(error: { status?: number; error?: { msg?: string }; message?: string } | null | undefined): string {
+    if (error?.status === 429) {
+      return 'Demasiados intentos de inicio de sesion. Intenta nuevamente mas tarde.';
+    }
+
+    return error?.error?.msg ?? error?.message ?? 'No fue posible iniciar sesion.';
   }
 }
