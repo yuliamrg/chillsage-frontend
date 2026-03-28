@@ -18,14 +18,14 @@
           <div class="alert alert-danger m-3" *ngIf="errorMessage">{{ errorMessage }}</div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-6 form-group">
+              <div class="col-md-6 form-group" *ngIf="showClientSelector">
                 <label>Cliente</label>
                 <select class="form-control" name="clientId" [(ngModel)]="form.clientId">
                   <option [ngValue]="null">Sin cambio</option>
                   <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
                 </select>
               </div>
-              <div class="col-md-6 form-group">
+              <div class="col-md-6 form-group" [class.col-md-12]="!showClientSelector">
                 <label>Solicitante</label>
                 <select class="form-control" name="requesterUserId" [(ngModel)]="form.requesterUserId">
                   <option [ngValue]="null">Sin cambio</option>

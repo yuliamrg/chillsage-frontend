@@ -58,7 +58,7 @@
                 <input type="text" class="form-control" name="fixedAssetCode" [(ngModel)]="form.fixedAssetCode" [disabled]="isPlanner" required>
               </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6" *ngIf="showClientSelector">
               <div class="form-group">
                 <label>Cliente</label>
                 <select class="form-control" name="clientId" [(ngModel)]="form.clientId" [disabled]="isPlanner">

@@ -32,6 +32,41 @@ const toNumber = (value: unknown): number | null => {
 };
 
 const toStringArray = (value: unknown): any[] => (Array.isArray(value) ? value : []);
+const toNumberArray = (value: unknown): number[] =>
+  toStringArray(value)
+    .map((item) => Number(item))
+    .filter((item) => !Number.isNaN(item));
+
+const normalizeRoleName = (value: unknown): string => {
+  const normalizedValue = String(value ?? '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_');
+
+  switch (normalizedValue) {
+    case 'admin':
+    case 'admin_plataforma':
+    case 'administrador_plataforma':
+      return 'admin_plataforma';
+    case 'admin_cliente':
+    case 'administrador_cliente':
+      return 'admin_cliente';
+    case 'planeador':
+    case 'planner':
+      return 'planeador';
+    case 'tecnico':
+    case 'tecnica':
+    case 'technician':
+      return 'tecnico';
+    case 'solicitante':
+    case 'requester':
+      return 'solicitante';
+    default:
+      return normalizedValue;
+  }
+};
 
 const toApiDateTime = (value: string | null | undefined): string | null => {
   if (!value) {
@@ -44,6 +79,7 @@ const toApiDateTime = (value: string | null | undefined): string | null => {
 
 export const mapRole = (role: any): RoleVm => ({
   id: Number(role?.id ?? 0),
+  name: normalizeRoleName(role?.name ?? role?.role_name ?? role?.slug ?? role?.description),
   description: role?.description ?? '',
 });
 
@@ -60,13 +96,21 @@ export const mapClient = (client: any): ClientVm => ({
 export const mapUser = (user: any): UserVm => ({
   id: Number(user?.id ?? 0),
   username: user?.username ?? '',
-  firstName: user?.name ?? '',
-  lastName: user?.last_name ?? '',
+  firstName: user?.name ?? user?.firstName ?? '',
+  lastName: user?.last_name ?? user?.lastName ?? '',
   email: user?.email ?? '',
-  clientId: toNumber(user?.client_id ?? user?.client),
-  clientName: user?.client_name ?? null,
-  roleId: toNumber(user?.role_id ?? user?.role),
-  roleName: user?.role_name ?? null,
+  primaryClientId: toNumber(user?.primary_client_id ?? user?.primaryClientId ?? user?.client_id ?? user?.clientId ?? user?.client),
+  primaryClientName: user?.primary_client_name ?? user?.primaryClientName ?? user?.client_name ?? user?.clientName ?? null,
+  clientIds: toNumberArray(user?.client_ids ?? user?.clientIds),
+  allClients: Boolean(user?.all_clients ?? user?.allClients),
+  clients: toStringArray(user?.clients).map((client) => ({
+    id: Number(client?.id ?? 0),
+    name: client?.name ?? '',
+  })),
+  clientId: toNumber(user?.primary_client_id ?? user?.primaryClientId ?? user?.client_id ?? user?.clientId ?? user?.client),
+  clientName: user?.primary_client_name ?? user?.primaryClientName ?? user?.client_name ?? user?.clientName ?? null,
+  roleId: toNumber(user?.role_id ?? user?.roleId ?? user?.role),
+  roleName: normalizeRoleName(user?.role_name ?? user?.roleName) || null,
   status: user?.status ?? '',
 });
 
@@ -165,9 +209,15 @@ export const mapUserFormToApi = (value: UserFormValue) => ({
   name: value.firstName,
   last_name: value.lastName,
   email: value.email,
-  client: value.clientId,
   role: value.roleId,
   status: value.status,
+  ...(value.roleName === 'admin_plataforma'
+    ? {}
+    : {
+        primary_client_id: value.primaryClientId,
+        client_ids: value.allClients ? [] : value.clientIds,
+        all_clients: value.allClients,
+      }),
   ...(value.password ? { password: value.password } : {}),
 });
 

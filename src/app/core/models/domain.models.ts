@@ -1,5 +1,6 @@
 export interface RoleVm {
   id: number;
+  name: string;
   description: string;
 }
 
@@ -34,12 +35,22 @@ export interface ClientVm {
   status: string;
 }
 
+export interface ClientSummaryVm {
+  id: number;
+  name: string;
+}
+
 export interface UserVm {
   id: number;
   username: string;
   firstName: string;
   lastName: string;
   email: string;
+  primaryClientId: number | null;
+  primaryClientName: string | null;
+  clientIds: number[];
+  allClients: boolean;
+  clients: ClientSummaryVm[];
   clientId: number | null;
   clientName: string | null;
   roleId: number | null;
@@ -143,8 +154,11 @@ export interface UserFormValue {
   firstName: string;
   lastName: string;
   email: string;
-  clientId: number | null;
+  primaryClientId: number | null;
+  clientIds: number[];
+  allClients: boolean;
   roleId: number | null;
+  roleName: string | null;
   status: string;
   password?: string;
 }

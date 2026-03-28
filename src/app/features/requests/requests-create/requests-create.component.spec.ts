@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { RequestsService } from '../../../core/services/requests.service';
@@ -20,6 +21,14 @@ describe('RequestsCreateComponent', () => {
       imports: [RequestsCreateComponent],
       providers: [
         provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            getScopedClients: (clients: any[]) => clients,
+            getPreferredClientId: () => null,
+            buildClientScopeOptions: (clients: any[]) => ({ clients, showSelector: true }),
+          },
+        },
         { provide: RequestsService, useValue: requestsService },
         { provide: ClientsService, useValue: { getAll: () => of([{ id: 1, name: 'Cliente', address: '', phone: '', email: '', description: '', status: 'active' }]) } },
         {

@@ -65,7 +65,12 @@ export class EquipmentEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.equipmentId = Number(this.route.snapshot.paramMap.get('id'));
-    this.clientsService.getAll().subscribe((clients) => (this.clients = clients));
+    this.clientsService.getAll().subscribe((clients) => {
+      this.clients =
+        typeof this.authService.getScopedClients === 'function'
+          ? this.authService.getScopedClients(clients)
+          : clients;
+    });
     this.equipmentsService.getById(this.equipmentId).subscribe({
       next: (equipment) => {
         this.form = {
@@ -88,6 +93,12 @@ export class EquipmentEditComponent implements OnInit {
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible cargar el equipo.';
       },
     });
+  }
+
+  get showClientSelector(): boolean {
+    return typeof this.authService.buildClientScopeOptions === 'function'
+      ? this.authService.buildClientScopeOptions(this.clients).showSelector
+      : true;
   }
 
   private validateForm(): string | null {

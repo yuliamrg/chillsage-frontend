@@ -55,13 +55,22 @@ export class RequestsListComponent implements OnInit {
       equipments: this.equipmentsService.getAll(),
     }).subscribe({
       next: ({ clients, users, equipments }) => {
-        this.clients = clients;
+        this.clients =
+          typeof this.authService.getScopedClients === 'function'
+            ? this.authService.getScopedClients(clients)
+            : clients;
         this.requesters = users;
         this.equipments = equipments;
       },
     });
 
     this.loadRequests();
+  }
+
+  get showClientFilter(): boolean {
+    return typeof this.authService.hasGlobalClientCoverage === 'function'
+      ? this.authService.hasGlobalClientCoverage()
+      : true;
   }
 
   loadRequests(): void {

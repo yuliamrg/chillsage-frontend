@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
 import { SchedulesService } from '../../../core/services/schedules.service';
@@ -36,6 +37,13 @@ describe('ScheduleEditComponent', () => {
       imports: [ScheduleEditComponent],
       providers: [
         provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            getScopedClients: (clients: any[]) => clients,
+            buildClientScopeOptions: (clients: any[]) => ({ clients, showSelector: true }),
+          },
+        },
         { provide: SchedulesService, useValue: schedulesService },
         { provide: ClientsService, useValue: { getAll: () => of([{ id: 1, name: 'Cliente', address: '', phone: '', email: '', description: '', status: 'active' }]) } },
         {

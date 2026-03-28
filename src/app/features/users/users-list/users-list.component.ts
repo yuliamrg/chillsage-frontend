@@ -69,6 +69,14 @@ export class UsersListComponent implements OnInit {
     return this.authService.canAccess('users', 'delete');
   }
 
+  formatCoverage(user: UserVm): string {
+    if (user.allClients) {
+      return 'Todos';
+    }
+
+    return user.clients.map((client) => client.name).join(', ') || '-';
+  }
+
   onPageSizeChange(): void {
     this.pagination = { ...this.pagination, page: 1 };
     this.loadUsers();

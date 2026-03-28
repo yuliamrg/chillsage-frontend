@@ -34,11 +34,11 @@ describe('permissionGuard', () => {
     authService.hasRole.and.returnValue(true);
 
     const result = TestBed.runInInjectionContext(() =>
-      permissionGuard({ data: { requiredRoles: ['admin'] } } as any, {} as any)
+      permissionGuard({ data: { requiredRoles: ['admin_plataforma'] } } as any, {} as any)
     );
 
     expect(result).toBeTrue();
-    expect(authService.hasRole).toHaveBeenCalledWith(['admin']);
+    expect(authService.hasRole).toHaveBeenCalledWith(['admin_plataforma']);
   });
 
   it('redirige a access-denied cuando el rol no coincide', () => {

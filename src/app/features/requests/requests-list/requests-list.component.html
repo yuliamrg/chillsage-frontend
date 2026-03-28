@@ -15,7 +15,7 @@
       <div class="card">
         <div class="card-header">
           <div class="row">
-            <div class="col-md-2 form-group mb-0">
+            <div class="col-md-2 form-group mb-0" *ngIf="showClientFilter">
               <label>Cliente</label>
               <select class="form-control" [(ngModel)]="filters.clientId" name="clientId">
                 <option [ngValue]="null">Todos</option>

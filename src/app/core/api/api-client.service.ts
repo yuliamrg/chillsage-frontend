@@ -29,11 +29,16 @@ export class ApiClientService {
   private normalizeError(error: unknown) {
     const httpError = error as HttpErrorResponse;
     const payload = httpError?.error;
+    const status = httpError?.status ?? 0;
     const isServerError = (httpError?.status ?? 0) >= 500;
     const requestId = httpError?.headers?.get('X-Request-Id') ?? undefined;
     const message =
       isServerError
         ? this.unexpectedServerErrorMessage
+        : status === 403
+          ? 'No tienes permiso para ejecutar esta accion o usar ese filtro dentro de tu cobertura.'
+          : status === 404
+            ? 'El recurso no existe o no esta disponible dentro de tu cobertura.'
         : payload?.msg ??
           payload?.message ??
           payload?.error ??

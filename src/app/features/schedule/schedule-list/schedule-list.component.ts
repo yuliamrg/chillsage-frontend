@@ -46,9 +46,19 @@ export class ScheduleListComponent implements OnInit {
 
   ngOnInit(): void {
     forkJoin({ clients: this.clientsService.getAll() }).subscribe({
-      next: ({ clients }) => (this.clients = clients),
+      next: ({ clients }) =>
+        (this.clients =
+          typeof this.authService.getScopedClients === 'function'
+            ? this.authService.getScopedClients(clients)
+            : clients),
     });
     this.loadSchedules();
+  }
+
+  get showClientFilter(): boolean {
+    return typeof this.authService.hasGlobalClientCoverage === 'function'
+      ? this.authService.hasGlobalClientCoverage()
+      : true;
   }
 
   loadSchedules(): void {

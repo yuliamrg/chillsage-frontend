@@ -6,7 +6,7 @@
       <div class="card">
         <div class="card-header">
           <div class="row">
-            <div class="col-md-3 form-group mb-0"><label>Cliente</label><select class="form-control" [(ngModel)]="filters.clientId" name="clientId"><option [ngValue]="null">Todos</option><option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option></select></div>
+            <div class="col-md-3 form-group mb-0" *ngIf="showClientFilter"><label>Cliente</label><select class="form-control" [(ngModel)]="filters.clientId" name="clientId"><option [ngValue]="null">Todos</option><option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option></select></div>
             <div class="col-md-2 form-group mb-0"><label>Estado</label><select class="form-control" [(ngModel)]="filters.status" name="status"><option [ngValue]="null">Todos</option><option value="unassigned">Sin asignar</option><option value="open">Abierto</option><option value="closed">Cerrado</option></select></div>
             <div class="col-md-2 form-group mb-0"><label>Tipo</label><select class="form-control" [(ngModel)]="filters.type" name="type"><option [ngValue]="null">Todos</option><option value="preventive">Preventivo</option><option value="inspection">Inspeccion</option><option value="corrective">Correctivo</option></select></div>
             <div class="col-md-2 form-group mb-0"><label>Desde</label><input type="date" class="form-control" [(ngModel)]="filters.dateFrom" name="dateFrom"></div>

@@ -1,6 +1,11 @@
-import { UserVm } from '../models/domain.models';
+import { ClientVm, UserVm } from '../models/domain.models';
 
-export type AppRole = 'admin' | 'planeador' | 'tecnico' | 'solicitante';
+export type AppRole =
+  | 'admin_plataforma'
+  | 'admin_cliente'
+  | 'planeador'
+  | 'tecnico'
+  | 'solicitante';
 
 export type AppResource =
   | 'users'
@@ -32,6 +37,17 @@ export interface AuthSession {
   tokenType: string;
   expiresIn: string;
   user: AuthUser;
+}
+
+export interface ClientCoverage {
+  primaryClientId: number | null;
+  clientIds: number[];
+  allClients: boolean;
+}
+
+export interface ClientScopeOption {
+  clients: ClientVm[];
+  showSelector: boolean;
 }
 
 export interface LoginPayload {

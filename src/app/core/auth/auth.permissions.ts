@@ -15,11 +15,21 @@ const fullSchedules: AppAction[] = [...scheduleManagement, 'delete'];
 const technicianOrders: AppAction[] = ['read', 'start', 'complete'];
 
 const rolePermissions: Record<AppRole, ResourcePermissions> = {
-  admin: {
+  admin_plataforma: {
     users: fullCrud,
     roles: fullCrud,
     profiles: fullCrud,
     clients: fullCrud,
+    equipments: fullCrud,
+    requests: fullRequests,
+    orders: fullOrders,
+    schedules: fullSchedules,
+  },
+  admin_cliente: {
+    users: fullCrud,
+    roles: readOnly,
+    profiles: readOnly,
+    clients: createUpdateRead,
     equipments: fullCrud,
     requests: fullRequests,
     orders: fullOrders,
@@ -49,10 +59,11 @@ const rolePermissions: Record<AppRole, ResourcePermissions> = {
 };
 
 const roleIds: Record<number, AppRole> = {
-  1: 'admin',
+  1: 'admin_plataforma',
   2: 'solicitante',
   3: 'planeador',
   4: 'tecnico',
+  5: 'admin_cliente',
 };
 
 export const resolveRole = (roleId: number | null, roleName: string | null): AppRole | null => {

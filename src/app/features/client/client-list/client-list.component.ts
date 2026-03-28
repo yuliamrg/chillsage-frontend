@@ -73,7 +73,7 @@ export class ClientListComponent implements OnInit {
   }
 
   canDeleteClients(): boolean {
-    return this.authService.hasRole(['admin']) && this.authService.canAccess('clients', 'delete');
+    return this.authService.hasRole(['admin_plataforma']) && this.authService.canAccess('clients', 'delete');
   }
 
   onPageSizeChange(): void {

@@ -56,13 +56,22 @@ export class OrdersListComponent implements OnInit {
       users: this.usersService.getAll(),
     }).subscribe({
       next: ({ clients, equipments, users }) => {
-        this.clients = clients;
+        this.clients =
+          typeof this.authService.getScopedClients === 'function'
+            ? this.authService.getScopedClients(clients)
+            : clients;
         this.equipments = equipments;
         this.technicians = users.filter((user) => (user.roleName ?? '').toLowerCase() === 'tecnico' || user.roleId === 4);
       },
     });
 
     this.loadOrders();
+  }
+
+  get showClientFilter(): boolean {
+    return typeof this.authService.hasGlobalClientCoverage === 'function'
+      ? this.authService.hasGlobalClientCoverage()
+      : true;
   }
 
   loadOrders(): void {

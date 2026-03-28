@@ -20,8 +20,11 @@ const loginResponse: LoginResponse = {
     name: 'Ana',
     last_name: 'Lopez',
     email: 'ana@example.com',
-    client: 3,
-    client_name: 'Cliente Demo',
+    primary_client_id: 3,
+    primary_client_name: 'Cliente Demo',
+    client_ids: [3, 4],
+    all_clients: false,
+    clients: [{ id: 3, name: 'Cliente Demo' }, { id: 4, name: 'Cliente Norte' }],
     role: 3,
     role_name: 'planeador',
     status: 'active',
@@ -79,6 +82,11 @@ describe('AuthService', () => {
       firstName: 'Ana',
       lastName: 'Lopez',
       email: 'ana@example.com',
+      primaryClientId: 3,
+      primaryClientName: 'Cliente Demo',
+      clientIds: [3, 4],
+      allClients: false,
+      clients: [{ id: 3, name: 'Cliente Demo' }, { id: 4, name: 'Cliente Norte' }],
       clientId: 3,
       clientName: 'Cliente Demo',
       roleId: 3,
@@ -104,10 +112,15 @@ describe('AuthService', () => {
         firstName: 'Ada',
         lastName: 'Admin',
         email: 'admin@example.com',
+        primaryClientId: null,
+        primaryClientName: null,
+        clientIds: [],
+        allClients: false,
+        clients: [],
         clientId: null,
         clientName: null,
         roleId: 1,
-        roleName: 'admin',
+        roleName: 'admin_plataforma',
         status: 'active',
       },
     };
@@ -118,8 +131,8 @@ describe('AuthService', () => {
 
     expect(hydratedService.isAuthenticated()).toBeTrue();
     expect(hydratedService.accessToken()).toBe('stored-token');
-    expect(hydratedService.role()).toBe('admin');
-    expect(hydratedService.hasRole(['admin'])).toBeTrue();
+    expect(hydratedService.role()).toBe('admin_plataforma');
+    expect(hydratedService.hasRole(['admin_plataforma'])).toBeTrue();
     expect(hydratedService.canAccess('users', 'delete')).toBeTrue();
   });
 
@@ -145,6 +158,11 @@ describe('AuthService', () => {
           firstName: 'Teo',
           lastName: 'Tecnico',
           email: 'tech@example.com',
+          primaryClientId: null,
+          primaryClientName: null,
+          clientIds: [],
+          allClients: false,
+          clients: [],
           clientId: null,
           clientName: null,
           roleId: 4,
@@ -177,6 +195,11 @@ describe('AuthService', () => {
           firstName: 'Sara',
           lastName: 'Solicitante',
           email: 'sara@example.com',
+          primaryClientId: 5,
+          primaryClientName: 'Cliente X',
+          clientIds: [5],
+          allClients: false,
+          clients: [{ id: 5, name: 'Cliente X' }],
           clientId: 5,
           clientName: 'Cliente X',
           roleId: 2,
@@ -199,7 +222,7 @@ describe('AuthService', () => {
   });
 
   it('niega permisos cuando no hay rol o el recurso no corresponde', () => {
-    expect(service.hasRole(['admin'])).toBeFalse();
+    expect(service.hasRole(['admin_plataforma'])).toBeFalse();
     expect(service.canAccess('users', 'read')).toBeFalse();
 
     localStorage.setItem(
@@ -214,6 +237,11 @@ describe('AuthService', () => {
           firstName: 'Sol',
           lastName: 'User',
           email: 'sol@example.com',
+          primaryClientId: 1,
+          primaryClientName: 'Cliente',
+          clientIds: [1],
+          allClients: false,
+          clients: [{ id: 1, name: 'Cliente' }],
           clientId: 1,
           clientName: 'Cliente',
           roleId: 2,

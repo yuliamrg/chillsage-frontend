@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ClientVm, EquipmentFormValue } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
@@ -18,6 +19,7 @@ const EQUIPMENT_STATUS_OPTIONS: readonly string[] = ['active', 'inactive', 'main
 })
 export class EquipmentCreateComponent implements OnInit {
   private readonly router = inject(Router);
+  readonly authService = inject(AuthService, { optional: true });
   private readonly clientsService = inject(ClientsService);
   private readonly equipmentsService = inject(EquipmentsService);
 
@@ -42,7 +44,22 @@ export class EquipmentCreateComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.clientsService.getAll().subscribe((clients) => (this.clients = clients));
+    this.clientsService.getAll().subscribe((clients) => {
+      this.clients =
+        typeof this.authService?.getScopedClients === 'function'
+          ? this.authService.getScopedClients(clients)
+          : clients;
+      this.form.clientId =
+        typeof this.authService?.getPreferredClientId === 'function'
+          ? this.authService.getPreferredClientId()
+          : this.form.clientId;
+    });
+  }
+
+  get showClientSelector(): boolean {
+    return typeof this.authService?.buildClientScopeOptions === 'function'
+      ? this.authService.buildClientScopeOptions(this.clients).showSelector
+      : true;
   }
 
   private validateForm(): string | null {

@@ -35,7 +35,8 @@
               <th class="text-center">Nombre</th>
               <th class="text-center">Apellidos</th>
               <th class="text-center">Email</th>
-              <th class="text-center">Cliente</th>
+              <th class="text-center">Cliente principal</th>
+              <th class="text-center">Cobertura</th>
               <th class="text-center">Rol</th>
               <th class="text-center">Estado</th>
               <th class="text-center">Acciones</th>
@@ -48,7 +49,8 @@
               <td>{{ user.firstName }}</td>
               <td>{{ user.lastName }}</td>
               <td>{{ user.email }}</td>
-              <td>{{ user.clientName || '-' }}</td>
+              <td>{{ user.primaryClientName || '-' }}</td>
+              <td>{{ formatCoverage(user) }}</td>
               <td>{{ user.roleName || '-' }}</td>
               <td>{{ user.status || '-' }}</td>
               <td class="project-actions text-center">
@@ -67,7 +69,7 @@
               </td>
             </tr>
             <tr *ngIf="!users.length">
-              <td colspan="9" class="text-center">No hay usuarios registrados.</td>
+              <td colspan="10" class="text-center">No hay usuarios registrados.</td>
             </tr>
           </tbody>
         </table>

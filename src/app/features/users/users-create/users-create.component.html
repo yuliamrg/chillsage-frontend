@@ -54,15 +54,6 @@
           <div class="row mx-1">
             <div class="col-sm-6">
               <div class="form-group">
-                <label>Cliente</label>
-                <select class="form-control" name="clientId" [(ngModel)]="form.clientId">
-                  <option [ngValue]="null">Seleccione el cliente...</option>
-                  <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group">
                 <label>Contrasena</label>
                 <input type="password" class="form-control" name="password" [(ngModel)]="form.password" required>
               </div>
@@ -72,7 +63,7 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Rol</label>
-                <select class="form-control" name="roleId" [(ngModel)]="form.roleId">
+                <select class="form-control" name="roleId" [(ngModel)]="form.roleId" (ngModelChange)="onRoleChange()">
                   <option [ngValue]="null">Seleccione el rol...</option>
                   <option *ngFor="let role of roles" [ngValue]="role.id">{{ role.description }}</option>
                 </select>
@@ -85,6 +76,43 @@
                   <option value="active">Activo</option>
                   <option value="inactive">Inactivo</option>
                 </select>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1" *ngIf="showCoverageFields">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Cliente principal</label>
+                <select class="form-control" name="primaryClientId" [(ngModel)]="form.primaryClientId">
+                  <option [ngValue]="null">Seleccione el cliente principal...</option>
+                  <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group mt-4 pt-2">
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="allClientsCreate" name="allClients" [(ngModel)]="form.allClients" (ngModelChange)="onAllClientsChange()">
+                  <label class="custom-control-label" for="allClientsCreate">Acceso a todos los clientes permitidos</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1" *ngIf="showCoverageFields && !form.allClients">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Cobertura por cliente</label>
+                <div class="border rounded p-3">
+                  <div class="form-check" *ngFor="let client of clients">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'create-client-' + client.id"
+                      [checked]="form.clientIds.includes(client.id)"
+                      (change)="toggleClient(client.id, $any($event.target).checked)">
+                    <label class="form-check-label" [for]="'create-client-' + client.id">{{ client.name }}</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

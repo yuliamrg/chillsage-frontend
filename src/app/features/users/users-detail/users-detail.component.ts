@@ -29,4 +29,16 @@ export class UsersDetailComponent implements OnInit {
       },
     });
   }
+
+  formatCoverage(): string {
+    if (!this.user) {
+      return '-';
+    }
+
+    if (this.user.allClients) {
+      return 'Todos los clientes permitidos';
+    }
+
+    return this.user.clients.map((client) => client.name).join(', ') || '-';
+  }
 }

@@ -3,7 +3,7 @@ import { hasPermission, resolveRole } from './auth.permissions';
 describe('auth.permissions', () => {
   describe('resolveRole', () => {
     it('prioriza el roleId cuando existe en el mapa', () => {
-      expect(resolveRole(1, 'solicitante')).toBe('admin');
+      expect(resolveRole(1, 'solicitante')).toBe('admin_plataforma');
     });
 
     it('resuelve por nombre cuando no hay roleId reconocido', () => {
@@ -16,10 +16,16 @@ describe('auth.permissions', () => {
   });
 
   describe('hasPermission', () => {
-    it('permite acciones operativas al admin', () => {
-      expect(hasPermission('admin', 'requests', 'approve')).toBeTrue();
-      expect(hasPermission('admin', 'orders', 'complete')).toBeTrue();
-      expect(hasPermission('admin', 'schedules', 'close')).toBeTrue();
+    it('permite acciones operativas al admin de plataforma', () => {
+      expect(hasPermission('admin_plataforma', 'requests', 'approve')).toBeTrue();
+      expect(hasPermission('admin_plataforma', 'orders', 'complete')).toBeTrue();
+      expect(hasPermission('admin_plataforma', 'schedules', 'close')).toBeTrue();
+    });
+
+    it('permite administracion operativa al admin de cliente', () => {
+      expect(hasPermission('admin_cliente', 'users', 'delete')).toBeTrue();
+      expect(hasPermission('admin_cliente', 'orders', 'assign')).toBeTrue();
+      expect(hasPermission('admin_cliente', 'roles', 'update')).toBeFalse();
     });
 
     it('permite solo las acciones operativas definidas para tecnico', () => {

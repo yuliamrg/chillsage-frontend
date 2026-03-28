@@ -8,8 +8,8 @@
           <div class="alert alert-danger m-3" *ngIf="errorMessage">{{ errorMessage }}</div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-6 form-group"><label>Cliente</label><select class="form-control" name="clientId" [(ngModel)]="form.clientId" (ngModelChange)="onClientChange()" required><option [ngValue]="null">Seleccione</option><option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option></select></div>
-              <div class="col-md-6 form-group"><label>Nombre</label><input class="form-control" name="name" [(ngModel)]="form.name" required></div>
+              <div class="col-md-6 form-group" *ngIf="showClientSelector"><label>Cliente</label><select class="form-control" name="clientId" [(ngModel)]="form.clientId" (ngModelChange)="onClientChange()" required><option [ngValue]="null">Seleccione</option><option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option></select></div>
+              <div class="col-md-6 form-group" [class.col-md-12]="!showClientSelector"><label>Nombre</label><input class="form-control" name="name" [(ngModel)]="form.name" required></div>
             </div>
             <div class="row">
               <div class="col-md-6 form-group"><label>Tipo</label><select class="form-control" name="type" [(ngModel)]="form.type"><option value="preventive">Preventivo</option><option value="inspection">Inspeccion</option><option value="corrective">Correctivo</option></select></div>

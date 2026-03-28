@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize, forkJoin } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ClientVm, EquipmentVm, ScheduleFormValue } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
 import { EquipmentsService } from '../../../core/services/equipments.service';
@@ -35,6 +36,7 @@ const toDateTimeLocalValue = (value: string | null): string | null => {
 export class ScheduleEditComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly authService = inject(AuthService, { optional: true });
   private readonly schedulesService = inject(SchedulesService);
   private readonly clientsService = inject(ClientsService);
   private readonly equipmentsService = inject(EquipmentsService);
@@ -68,7 +70,10 @@ export class ScheduleEditComponent implements OnInit {
           return;
         }
 
-        this.clients = clients;
+        this.clients =
+          typeof this.authService?.getScopedClients === 'function'
+            ? this.authService.getScopedClients(clients)
+            : clients;
         this.equipments = equipments;
         this.form = {
           clientId: schedule.clientId,
@@ -81,6 +86,12 @@ export class ScheduleEditComponent implements OnInit {
       },
       error: (error) => (this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible cargar el cronograma.'),
     });
+  }
+
+  get showClientSelector(): boolean {
+    return typeof this.authService?.buildClientScopeOptions === 'function'
+      ? this.authService.buildClientScopeOptions(this.clients).showSelector
+      : true;
   }
 
   get filteredEquipments(): EquipmentVm[] {
