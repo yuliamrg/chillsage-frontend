@@ -171,13 +171,13 @@ export const mapUserFormToApi = (value: UserFormValue) => ({
   ...(value.password ? { password: value.password } : {}),
 });
 
-export const mapClientFormToApi = (value: ClientFormValue) => ({
-  name: value.name,
-  address: value.address,
-  phone: value.phone,
-  email: value.email,
-  description: value.description,
-  status: value.status,
+export const mapClientFormToApi = (value: Partial<ClientFormValue>) => ({
+  ...(value.name !== undefined ? { name: value.name } : {}),
+  ...(value.address !== undefined ? { address: value.address } : {}),
+  ...(value.phone !== undefined ? { phone: value.phone } : {}),
+  ...(value.email !== undefined ? { email: value.email } : {}),
+  ...(value.description !== undefined ? { description: value.description } : {}),
+  ...(value.status !== undefined ? { status: value.status } : {}),
 });
 
 export const mapEquipmentFormToApi = (value: Partial<EquipmentFormValue>) => ({

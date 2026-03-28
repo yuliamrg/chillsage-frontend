@@ -52,6 +52,13 @@ export class ClientListComponent implements OnInit {
     this.clientsService.remove(id).subscribe({
       next: () => this.loadClients(),
       error: (error) => {
+        if (error?.status === 409) {
+          this.errorMessage =
+            error?.error?.msg ??
+            'No se puede eliminar el cliente porque tiene usuarios, equipos, solicitudes, ordenes o cronogramas relacionados.';
+          return;
+        }
+
         this.errorMessage = error?.error?.msg ?? error?.message ?? 'No fue posible eliminar el cliente.';
       },
     });
@@ -66,7 +73,7 @@ export class ClientListComponent implements OnInit {
   }
 
   canDeleteClients(): boolean {
-    return this.authService.canAccess('clients', 'delete');
+    return this.authService.hasRole(['admin']) && this.authService.canAccess('clients', 'delete');
   }
 
   onPageSizeChange(): void {

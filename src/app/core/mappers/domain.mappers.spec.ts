@@ -1,4 +1,5 @@
 import {
+  mapClientFormToApi,
   mapEquipment,
   mapEquipmentFormToApi,
   mapSchedule,
@@ -59,6 +60,24 @@ describe('domain schedule mappers', () => {
       status: 'retired',
       use_start_at: new Date('2026-03-28T08:30').toISOString(),
       use_end_at: new Date('2026-03-28T10:30').toISOString(),
+    });
+    expect(payload).not.toEqual(jasmine.objectContaining({
+      user_created_id: jasmine.anything(),
+      user_updated_id: jasmine.anything(),
+    }));
+  });
+
+  it('serializa payload parcial de client sin campos de auditoria', () => {
+    const payload = mapClientFormToApi({
+      phone: '+57 300 123 4567',
+      description: 'Contacto actualizado',
+      status: 'inactive',
+    });
+
+    expect(payload).toEqual({
+      phone: '+57 300 123 4567',
+      description: 'Contacto actualizado',
+      status: 'inactive',
     });
     expect(payload).not.toEqual(jasmine.objectContaining({
       user_created_id: jasmine.anything(),

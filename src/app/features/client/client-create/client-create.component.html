@@ -62,8 +62,7 @@
               <div class="form-group">
                 <label>Estado</label>
                 <select class="form-control" name="status" [(ngModel)]="form.status">
-                  <option value="active">Activo</option>
-                  <option value="inactive">Inactivo</option>
+                  <option *ngFor="let status of statusOptions" [value]="status">{{ status === 'active' ? 'Activo' : 'Inactivo' }}</option>
                 </select>
               </div>
             </div>

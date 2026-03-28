@@ -27,7 +27,7 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Nombre</label>
-                <input type="text" class="form-control" name="name" [(ngModel)]="form.name" required>
+                <input type="text" class="form-control" name="name" [(ngModel)]="form.name" [disabled]="isPlanner" [required]="!isPlanner">
               </div>
             </div>
             <div class="col-sm-6">
@@ -47,7 +47,7 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Correo</label>
-                <input type="email" class="form-control" name="email" [(ngModel)]="form.email" required>
+                <input type="email" class="form-control" name="email" [(ngModel)]="form.email" [disabled]="isPlanner" [required]="!isPlanner">
               </div>
             </div>
           </div>
@@ -62,17 +62,21 @@
               <div class="form-group">
                 <label>Estado</label>
                 <select class="form-control" name="status" [(ngModel)]="form.status">
-                  <option value="active">Activo</option>
-                  <option value="inactive">Inactivo</option>
+                  <option *ngFor="let status of statusOptions" [value]="status">{{ status === 'active' ? 'Activo' : 'Inactivo' }}</option>
                 </select>
               </div>
             </div>
+          </div>
+          <div class="alert alert-info mx-2 mb-0" *ngIf="isPlanner">
+            Como planeador solo puedes editar direccion, telefono, descripcion y estado.
           </div>
           <div class="card-footer">
             <div class="row">
               <div class="col-sm-12 text-center">
                 <a routerLink="/client/list" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-warning ml-3">Guardar</button>
+                <button type="submit" class="btn btn-warning ml-3" [disabled]="isSaving">
+                  {{ isSaving ? 'Guardando...' : 'Guardar' }}
+                </button>
               </div>
             </div>
           </div>

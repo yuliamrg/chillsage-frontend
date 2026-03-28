@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ClientFormValue } from '../../../core/models/domain.models';
 import { ClientsService } from '../../../core/services/clients.service';
+import { CLIENT_STATUS_OPTIONS, normalizeClientForm, validateClientForm } from '../client-form.utils';
 
 @Component({
   selector: 'app-client-create',
@@ -17,6 +18,7 @@ export class ClientCreateComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
 
+  readonly statusOptions = CLIENT_STATUS_OPTIONS;
   form: ClientFormValue = {
     name: '',
     address: '',
@@ -34,6 +36,13 @@ export class ClientCreateComponent {
     }
 
     this.errorMessage = '';
+    this.form = normalizeClientForm(this.form);
+    const validationError = validateClientForm(this.form, { allowMasterFieldsEdit: true });
+    if (validationError) {
+      this.errorMessage = validationError;
+      return;
+    }
+
     this.isSaving = true;
 
     this.clientsService.create(this.form).pipe(finalize(() => (this.isSaving = false))).subscribe({

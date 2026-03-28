@@ -31,7 +31,7 @@ export class ClientsService {
     return this.api.post<{ client: unknown }>('/clients', mapClientFormToApi(payload)).pipe(map((response) => mapClient(response.client)));
   }
 
-  update(id: number, payload: ClientFormValue) {
+  update(id: number, payload: Partial<ClientFormValue>) {
     return this.api.put<{ client: unknown }>(`/clients/${id}`, mapClientFormToApi(payload)).pipe(map((response) => mapClient(response.client)));
   }
 
