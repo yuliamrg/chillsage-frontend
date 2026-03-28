@@ -33,7 +33,15 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Telefono</label>
-                <input type="text" class="form-control" name="phone" [(ngModel)]="form.phone">
+                <input
+                  type="tel"
+                  class="form-control"
+                  name="phone"
+                  [(ngModel)]="form.phone"
+                  inputmode="tel"
+                  pattern="^[+()\\-\\s\\d]+$"
+                  title="Ingrese un telefono valido usando solo numeros, espacios o +()-"
+                >
               </div>
             </div>
           </div>
@@ -47,7 +55,14 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Correo</label>
-                <input type="email" class="form-control" name="email" [(ngModel)]="form.email" required>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  [(ngModel)]="form.email"
+                  email
+                  required
+                >
               </div>
             </div>
           </div>

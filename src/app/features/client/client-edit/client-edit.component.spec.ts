@@ -78,4 +78,16 @@ describe('ClientEditComponent', () => {
     expect(clientsService.update).not.toHaveBeenCalled();
     expect(component.errorMessage).toBe('Debe ingresar un telefono valido con al menos 7 digitos.');
   });
+
+  it('bloquea el envio si el correo no tiene formato valido', () => {
+    component.form = {
+      ...component.form,
+      email: 'correo-invalido',
+    };
+
+    component.submit();
+
+    expect(clientsService.update).not.toHaveBeenCalled();
+    expect(component.errorMessage).toBe('Debe ingresar un correo valido.');
+  });
 });

@@ -29,7 +29,7 @@ const rolePermissions: Record<AppRole, ResourcePermissions> = {
     users: readOnly,
     roles: readOnly,
     profiles: readOnly,
-    clients: fullCrud,
+    clients: createUpdateRead,
     equipments: createUpdateRead,
     requests: requestManagement,
     orders: [...orderManagement, 'start', 'complete'],

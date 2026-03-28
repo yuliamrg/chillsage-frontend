@@ -36,6 +36,13 @@ describe('auth.permissions', () => {
       expect(hasPermission('solicitante', 'orders', 'cancel')).toBeFalse();
     });
 
+    it('impide que planeador elimine clientes', () => {
+      expect(hasPermission('planeador', 'clients', 'read')).toBeTrue();
+      expect(hasPermission('planeador', 'clients', 'create')).toBeTrue();
+      expect(hasPermission('planeador', 'clients', 'update')).toBeTrue();
+      expect(hasPermission('planeador', 'clients', 'delete')).toBeFalse();
+    });
+
     it('niega permisos cuando no hay rol', () => {
       expect(hasPermission(null, 'requests', 'read')).toBeFalse();
     });
