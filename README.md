@@ -1,226 +1,85 @@
 # Chillsage Frontend
 
-Frontend administrativo de Chillsage construido con Angular 17 y maquetado sobre AdminLTE. El proyecto ya consume el backend aliado `../chillsage-backend`, incorpora autenticacion con JWT, autorizacion por rol y una base inicial de pruebas automatizadas para la capa de auth.
+Frontend administrativo de Chillsage construido con Angular 17. Consume el backend aliado `../chillsage-backend`, usa autenticacion con JWT, permisos por rol y una UI basada en AdminLTE.
 
 ## Resumen
 
-- Framework: Angular 17 con `standalone components`
-- Enrutamiento: `@angular/router` con lazy loading por feature
-- UI base: AdminLTE + Bootstrap + Font Awesome desde `src/assets`
-- Integracion API: capa HTTP centralizada en `src/app/core/api/`
-- Auth: login en `/login`, sesion persistida en `localStorage`, Bearer token por interceptor
-- Autorizacion: guards por autenticacion y permisos por rol en rutas y UI
-- Pruebas: Karma + Jasmine con cobertura inicial de auth, guards e interceptor
-- Idioma predominante de la UI: espanol
-
-## Stack tecnico
-
-### Dependencias principales
-
-- `@angular/*` `17.3.x`
-- `rxjs` `7.8.x`
-- `zone.js` `0.14.x`
-
-### Tooling
-
-- Angular CLI `17.3.7`
-- TypeScript `5.4.x`
+- Angular 17 con `standalone components`
+- Lazy loading por feature con `@angular/router`
+- Capa HTTP compartida en `src/app/core/api/`
+- Login en `/login` y panel autenticado para el resto del sistema
+- Guards de autenticacion y permisos en rutas y UI
 - Karma + Jasmine para pruebas unitarias
+- UI en espanol
 
-## Como ejecutar
+## Estructura
+
+```text
+src/app/
+  core/       servicios, auth, modelos, mappers y utilidades
+  features/   dashboard, auth, users, requests, orders, equipment, schedule, client
+  layout/     shells y piezas compartidas del panel
+docs/         contrato API y flujo de trabajo Git
+scripts/      utilidades locales para pruebas headless
+```
+
+## Puesta en marcha
 
 1. Instalar dependencias:
 
 ```bash
-npm install
+pnpm install
 ```
 
 2. Levantar el servidor de desarrollo:
 
 ```bash
-npm start
+pnpm start
 ```
 
-3. Abrir:
+3. Abrir `http://localhost:4200/`.
 
-```text
-http://localhost:4200/
-```
+## Scripts utiles
 
-## Scripts disponibles
+- `pnpm start`: inicia `ng serve`
+- `pnpm run build`: genera el build de produccion
+- `pnpm run watch`: recompila en modo desarrollo
+- `pnpm test`: ejecuta Karma en modo watch
+- `pnpm run test:headless`: corre Karma en `ChromeHeadlessCI`
+- `pnpm run browser:install`: descarga un Chrome local en `.cache/puppeteer`
 
-- `npm start`: inicia `ng serve`
-- `npm run build`: compila la aplicacion
-- `npm run watch`: compila en modo desarrollo con watch
-- `npm test`: ejecuta pruebas unitarias con Karma
-- `pnpm run browser:install`: descarga un Chrome local para Karma en `/.cache/puppeteer`
+## Backend y contrato
 
-## Integracion con backend
+El frontend consume `../chillsage-backend`. La fuente de verdad del contrato sigue estando en el backend; este repo solo documenta el consumo desde frontend.
 
-Este frontend consume el backend ubicado en:
+- Contrato resumido del frontend: `docs/api-contract.md`
+- Flujo de ramas y commits: `docs/git-workflow.md`
 
-- `../chillsage-backend`
+Puntos operativos vigentes en código:
 
-Fuente principal del contrato:
+- fallback local de API: `http://localhost:3037/api`
+- override runtime: `window.__CHILLSAGE_API_BASE_URL__`
+- `401` fuera de login: limpia sesion y redirige a `/login?reason=expired`
+- `403` fuera de login: redirige a `/access-denied`
+- las requests API agregan `X-Request-Id`
 
-- `../chillsage-backend/docs/contracts/FRONTEND_API_SERVICES.md`
-- `docs/api-contract.md`
+## Validacion recomendada
 
-Reglas de trabajo:
-
-- El frontend consume el contrato real del backend; no debe reinventarlo.
-- Si backend cambia endpoints, payloads, auth o relaciones enriquecidas, el frontend debe ajustarse en el mismo trabajo.
-- Ningun cambio de integracion se considera completo si solo compila frontend o solo backend.
-
-Notas operativas actuales:
-
-- el backend expone la API en `http://localhost:<PORT>/api`, con `3000` como default si `PORT` no existe
-- este frontend mantiene `http://localhost:3037/api` como fallback local, pero permite override en runtime con `window.__CHILLSAGE_API_BASE_URL__`
-- si el frontend corre en navegador, su origin debe estar incluido en `CORS_ORIGINS`
-- la capa HTTP propaga `X-Request-Id` para correlacion con logs del backend
-- Karma resuelve `CHROME_BIN` desde `/.cache/puppeteer` o desde un Chrome/Chromium del sistema
-
-Archivos que normalmente se revisan cuando cambia el contrato:
-
-- `src/app/core/models/domain.models.ts`
-- `src/app/core/mappers/domain.mappers.ts`
-- `src/app/core/api/*.ts`
-- `src/app/core/auth/*.ts`
-- pantallas `list`, `detail`, `new` y `edit` del recurso afectado
-
-## Autenticacion y autorizacion
-
-La aplicacion ahora expone una ruta publica:
-
-- `/login`
-
-Todo el resto del panel corre dentro de un layout autenticado y queda protegido por guards.
-
-### Flujo de sesion
-
-- `POST /users/login` autentica al usuario
-- la respuesta se mapea a `AuthSession`
-- la sesion se persiste en `localStorage`
-- el interceptor agrega `Authorization: Bearer <token>` a requests API protegidos
-- un `401` fuera de login limpia sesion y redirige a `/login?reason=expired`
-- un `403` redirige a `/access-denied`
-
-### Roles soportados
-
-- `admin`: acceso total
-- `planeador`: CRUD sobre `clients`, `equipments`, `requests`, `orders`, `schedules`; lectura en `users`, `roles`, `profiles`
-- `tecnico`: lectura sobre `clients`, `equipments`, `requests`, `orders`, `schedules`
-- `solicitante`: lectura sobre `requests` y `orders`, creacion de `requests`
-
-### Piezas principales
-
-- `src/app/core/auth/auth.service.ts`
-- `src/app/core/auth/auth.interceptor.ts`
-- `src/app/core/auth/auth.guard.ts`
-- `src/app/core/auth/guest.guard.ts`
-- `src/app/core/auth/permission.guard.ts`
-- `src/app/features/auth/login/`
-- `src/app/layout/authenticated-layout/`
-- `src/app/layout/access-denied/`
-
-## Arquitectura actual
-
-La aplicacion usa dos shells:
-
-- shell publico para `/login`
-- shell autenticado con `HeaderComponent`, `SidebarComponent`, `FooterComponent` y `RouterOutlet`
-
-El enrutamiento principal vive en `src/app/app.routes.ts`. Cada dominio carga sus rutas mediante `loadChildren`, y esas rutas pueden declarar `requiredRoles` o `requiredPermission` para ser evaluados por `permissionGuard`.
-
-### Estructura de carpetas
-
-```text
-src/
-  app/
-    core/
-      api/
-      auth/
-      mappers/
-      models/
-    features/
-      auth/
-      dashboard/
-      schedule/
-      equipment/
-      orders/
-      requests/
-      users/
-      client/
-    layout/
-      authenticated-layout/
-      access-denied/
-      header/
-      sidebar/
-      footer/
-      not-found/
-```
-
-## Testing
-
-La base de pruebas actual cubre la capa de autenticacion:
-
-- `auth.service.spec.ts`
-- `auth.guard.spec.ts`
-- `guest.guard.spec.ts`
-- `permission.guard.spec.ts`
-- `auth.interceptor.spec.ts`
-
-Validacion minima esperada para cambios funcionales:
+Para cambios funcionales o de integracion:
 
 ```bash
-npm run test:auto
-npm run test:headless
-npm run build
+pnpm run test:headless
+pnpm run build
 ```
-
-Adicionalmente, las skills usadas para este proyecto migraron a `.codex/`.
-
-Esa carpeta se usa como configuracion local de Codex para este entorno y no hace parte del versionamiento del repositorio. La carpeta `.agents/` ya no se usa en este proyecto.
-
-## Workflow de Git
-
-El flujo recomendado para ramas, commits y validaciones se documenta en:
-
-- `docs/git-workflow.md`
-
-Resumen practico:
-
-1. crear una rama `feat/*`, `fix/*`, `docs/*`, etc.
-2. trabajar en cambios pequenos y coherentes
-3. validar con `build` y, si aplica, `test`
-4. hacer commit con Conventional Commits
 
 ## Archivos clave
 
-- `package.json`: dependencias y scripts
-- `angular.json`: configuracion de build y assets globales
-- `docs/api-contract.md`: contrato consumido por el frontend
-- `docs/git-workflow.md`: flujo recomendado de ramas y commits
-- `src/app/app.config.ts`: providers globales
-- `src/app/app.routes.ts`: routing principal
-- `src/app/core/auth/`: autenticacion, autorizacion y pruebas
-- `src/app/layout/sidebar/sidebar.component.html`: navegacion principal filtrada por permisos
-
-## Verificacion reciente
-
-Sobre el estado actual se ejecutaron:
-
-```bash
-npm run test:auto
-npm run test:headless
-npm run build
-```
-
-Resultado:
-
-- la suite de pruebas pasa
-- la aplicacion compila correctamente
-
-## Conclusión
-
-Chillsage Frontend ya no debe tratarse como un prototipo visual aislado. Hoy tiene integracion real con backend, control de acceso por rol y una base de pruebas sobre la capa de auth. La siguiente fase razonable es ampliar cobertura hacia CRUDs, estados de carga/error y flujos completos por feature.
+- `package.json`
+- `angular.json`
+- `src/app/app.routes.ts`
+- `src/app/core/api/`
+- `src/app/core/auth/`
+- `src/app/core/models/domain.models.ts`
+- `src/app/core/mappers/domain.mappers.ts`
+- `docs/api-contract.md`
+- `docs/git-workflow.md`

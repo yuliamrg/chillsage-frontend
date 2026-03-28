@@ -1,85 +1,45 @@
-# Contrato API Vigente para Chillsage Frontend
+# Contrato API Consumido por el Frontend
 
-Este documento resume el contrato que el frontend consume actualmente desde `../chillsage-backend`. Complementa, pero no reemplaza, la documentacion oficial del backend.
+Este documento resume el contrato que el frontend consume desde `../chillsage-backend`. Complementa la documentacion del backend, pero no la reemplaza.
 
 ## Fuente de verdad
 
 - `../chillsage-backend/docs/contracts/FRONTEND_API_SERVICES.md`
 - `../chillsage-backend/docs/CODEX_CONTEXT.md`
 
-Si hay divergencia entre este archivo y el backend, prevalece el backend.
+Si hay divergencia, prevalece el backend.
 
-## Base URL
+## Base URL y transporte
 
-```text
-http://localhost:<PORT>/api
-```
-
-Notas:
-
-- el backend usa `PORT` configurable y por defecto `3000`
-- el frontend puede sobrescribir la URL base en runtime con `window.__CHILLSAGE_API_BASE_URL__`
-- si no se define override, este proyecto conserva el fallback local `http://localhost:3037/api`
+- El backend expone la API bajo `http://localhost:<PORT>/api`.
+- Este frontend usa `http://localhost:3037/api` como fallback local.
+- La base URL puede sobreescribirse en runtime con `window.__CHILLSAGE_API_BASE_URL__`.
+- La capa HTTP agrega `X-Request-Id` a cada request API y propaga ese valor cuando llega en errores del backend.
 
 ## Autenticacion
 
-### Endpoint publico
+Endpoint publico:
 
 ```text
 POST /users/login
 ```
 
-Payload esperado:
+Notas vigentes en frontend:
 
-```json
-{
-  "email": "admin@example.com",
-  "password": "secret"
-}
-```
-
-El backend tambien puede aceptar `username`, pero la UI actual usa `email + password`.
-
-Respuesta esperada:
-
-```json
-{
-  "status": true,
-  "msg": "Login exitoso",
-  "access_token": "jwt-token",
-  "token_type": "Bearer",
-  "expires_in": "3600",
-  "user": {
-    "id": 1,
-    "username": "admin",
-    "name": "Ada",
-    "last_name": "Admin",
-    "email": "admin@example.com",
-    "client": null,
-    "client_name": null,
-    "role": 1,
-    "role_name": "admin",
-    "status": "active"
-  }
-}
-```
-
-### Sesion en frontend
-
+- la UI envia `email` y `password`
+- el backend tambien puede aceptar `username`
 - la respuesta se transforma a `AuthSession`
-- la sesion se guarda en `localStorage`
-- el interceptor agrega `Authorization: Bearer <token>` a toda request API protegida
+- la sesion se persiste en `localStorage`
+- el interceptor agrega `Authorization: Bearer <token>` a requests API protegidas
 - `/users/login` queda excluido del Bearer
 
-### Manejo de errores
+Manejo de errores implementado:
 
-- `401` fuera de login: limpiar sesion y redirigir a `/login?reason=expired`
-- `403` fuera de login: redirigir a `/access-denied`
-- `429` en login: mostrar mensaje estable de reintento
-- `500`: no depender de detalles internos del backend; usar mensaje generico
-- el backend responde `X-Request-Id` y el frontend envia ese header en requests API para correlacion
+- `401` fuera de login: limpia sesion y redirige a `/login?reason=expired`
+- `403` fuera de login: redirige a `/access-denied`
+- errores `5xx`: se normalizan con un mensaje generico para UI
 
-## Roles y permisos consumidos por el frontend
+## Roles y permisos
 
 Roles reconocidos por id o nombre:
 
@@ -88,14 +48,7 @@ Roles reconocidos por id o nombre:
 - `3`: `planeador`
 - `4`: `tecnico`
 
-Matriz de permisos aplicada en UI y rutas:
-
-- `admin`: CRUD total sobre todos los recursos
-- `planeador`: lectura en `users`, `roles`, `profiles`; CRUD en `clients` y `equipments`; operacion completa sin `delete` en `requests`, `orders` y `schedules`
-- `tecnico`: lectura en `clients`, `equipments`, `requests`, `orders`, `schedules`; ejecucion de `orders.start` y `orders.complete`
-- `solicitante`: lectura en `requests` y `orders`; creacion en `requests`
-
-Recursos modelados en frontend:
+Recursos modelados:
 
 - `users`
 - `roles`
@@ -120,85 +73,53 @@ Acciones modeladas:
 - `open`
 - `close`
 
-## Rutas frontend relacionadas con auth
+Permisos vigentes en `src/app/core/auth/auth.permissions.ts`:
 
-- `/login`: publica
-- `/access-denied`: publica
-- resto del panel: protegido por `authGuard` o `authChildGuard`
+- `admin`: CRUD total sobre todos los recursos; en `requests`, `orders` y `schedules` tambien incluye acciones operativas
+- `planeador`: lectura en `users`, `roles`, `profiles`; `create`, `read`, `update` en `clients` y `equipments`; gestion operativa de `requests`, `orders` y `schedules` sin `delete`
+- `tecnico`: lectura en `clients`, `equipments`, `requests`, `schedules`; en `orders` puede `read`, `start` y `complete`
+- `solicitante`: `read` y `create` en `requests`; `read` en `orders`
 
-Las rutas por feature pueden declarar:
+## Rutas protegidas
+
+Rutas publicas:
+
+- `/login`
+- `/access-denied`
+
+El resto del panel usa `authChildGuard`. Las rutas por feature usan `permissionGuard` con:
 
 - `data.requiredRoles`
 - `data.requiredPermission`
 
-## Recursos consumidos actualmente
+Features cargadas desde `src/app/app.routes.ts`:
 
-El frontend ya tiene capa API y mappers para:
-
-- `users`
-- `roles`
-- `clients`
-- `equipments`
-- `requests`
+- `dashboard`
+- `schedule`
+- `equipment`
 - `orders`
-- `schedules`
+- `requests`
+- `users`
+- `client`
 
-Cada cambio de contrato debe revisarse al menos en:
+## Archivos que deben actualizarse cuando cambia el contrato
 
 - `src/app/core/models/domain.models.ts`
 - `src/app/core/mappers/domain.mappers.ts`
 - `src/app/core/api/`
-- `src/app/core/auth/` si el cambio afecta login, token o autorizacion
-- componentes `list`, `detail`, `new`, `edit` del feature afectado
+- `src/app/core/auth/` si cambia login, token o permisos
+- pantallas `list`, `detail`, `create` y `edit` del recurso afectado
 
-## Estado operativo implementado en frontend
+## Checklist de sincronizacion
 
-El frontend ya consume el contrato operativo nuevo de:
-
-- `requests`
-- `orders`
-- `schedules`
-
-Para `schedules`, la implementacion actual sigue estas reglas del backend:
-
-- recurso: `GET /schedules`, `GET /schedules/:id`, `POST /schedules`, `PUT /schedules/:id`, `POST /schedules/:id/open`, `POST /schedules/:id/close`, `DELETE /schedules/:id`
-- filtros soportados: `client_id`, `status`, `type`, `date_from`, `date_to`
-- estados validos: `unassigned`, `open`, `closed`
-- `open` y `close` se consumen con body vacio
-- create/update envian `client_id`, `name`, `type`, `scheduled_date`, `description`, `equipment_ids`
-- la UI valida que exista al menos un equipo y limpia equipos incompatibles al cambiar de cliente
-- la UI oculta `Editar` para cronogramas `closed`, `Abrir` para estados distintos de `unassigned` y `Cerrar` para estados distintos de `open`
-
-Notas practicas de integracion:
-
-- el backend es la fuente de verdad para reglas de negocio; el frontend replica solo validaciones de UX de bajo costo
-- cuando el backend cambie estados, payloads o acciones de `schedules`, deben actualizarse en el mismo cambio `domain.models.ts`, `domain.mappers.ts`, `schedules.service.ts` y pantallas de `schedule`
-
-## Checklist de sincronizacion con backend
-
-1. Revisar endpoint, payload y codigos de error vigentes en `../chillsage-backend`.
-2. Contrastar ese contrato contra `docs/api-contract.md` y actualizar este archivo si quedo desfasado.
-3. Actualizar modelos y mappers si cambia el shape de datos.
-4. Ajustar servicios o wrappers API si cambia endpoint, metodo o envoltura de respuesta.
-5. Ajustar guards, permisos o UI si cambia el esquema de auth/autorizacion.
-6. Actualizar pruebas afectadas.
-7. Ejecutar:
+1. Revisar endpoints, payloads y codigos de error en `../chillsage-backend`.
+2. Actualizar este documento si el frontend ya consume un contrato distinto.
+3. Ajustar modelos, mappers y servicios.
+4. Ajustar guards o permisos si cambia auth/autorizacion.
+5. Actualizar pruebas afectadas.
+6. Ejecutar:
 
 ```bash
-npm run test:headless
-npm run build
+pnpm run test:headless
+pnpm run build
 ```
-
-## Cobertura automatizada relacionada
-
-La capa de auth actualmente tiene pruebas en:
-
-- `src/app/core/auth/auth.service.spec.ts`
-- `src/app/core/auth/auth.guard.spec.ts`
-- `src/app/core/auth/guest.guard.spec.ts`
-- `src/app/core/auth/permission.guard.spec.ts`
-- `src/app/core/auth/auth.interceptor.spec.ts`
-
-## Nota practica
-
-Este documento ya no es un contrato inferido de pantallas mock. Refleja el contrato usado por la implementacion vigente del frontend, especialmente en login, JWT y autorizacion por rol.

@@ -71,13 +71,13 @@ git diff
 5. Ejecutar validaciones minimas del proyecto:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Si el cambio afecta comportamiento critico, ademas:
 
 ```bash
-npm run test:headless
+pnpm run test:headless
 ```
 
 6. Agregar solo los archivos necesarios:
@@ -111,8 +111,8 @@ git checkout -b feat/nombre-del-cambio
 3. Validar:
 
 ```bash
-npm run test:headless
-npm run build
+pnpm run test:headless
+pnpm run build
 ```
 
 4. Pasar los cambios a `main` local:
@@ -146,7 +146,7 @@ En este proyecto, cuando trabajas solo, esa es la forma correcta de pasar cambio
 
 ## Checklist antes de merge
 
-- La rama compila con `npm run build`.
+- La rama compila con `pnpm run build`.
 - Si hubo cambio funcional, las pruebas relevantes pasan.
 - Los archivos versionados son unicamente los necesarios.
 - El commit message explica correctamente el cambio.

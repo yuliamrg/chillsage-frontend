@@ -1,25 +1,48 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-This repo is an Angular 17 admin frontend. Application code lives in `src/`, with feature screens under `src/app/features/` (`users/`, `requests/`, `orders/`, `equipment/`, `schedule/`, `client/`). Shared layout pieces live in `src/app/layout/`, and reusable API, models, mappers, and services live in `src/app/core/`. Static assets and vendored AdminLTE files live in `src/assets/`. Project notes and workflow docs live in `docs/`.
+## Scope
+This repo is the Angular 17 admin frontend for Chillsage. Keep docs short, operational, and aligned with the codebase. Prefer `README.md` for onboarding, `AGENTS.md` for repo conventions, and `docs/` for durable technical detail.
 
-## Build, Test, and Development Commands
-- `npm install`: install dependencies.
-- `npm start`: run the Angular dev server at `http://localhost:4200/`.
-- `npm run build`: create a production build in `dist/angular-example/`.
-- `npm run watch`: rebuild continuously with the development configuration.
-- `npm test`: run unit tests with Karma and Jasmine.
+## Project Structure
+- App code lives in `src/`.
+- Feature screens live in `src/app/features/`.
+- Shared layout lives in `src/app/layout/`.
+- API, auth, models, mappers, and shared services live in `src/app/core/`.
+- Static assets and vendored AdminLTE files live in `src/assets/`.
+- Durable project docs live in `docs/`.
 
-## Coding Style & Naming Conventions
-Follow `.editorconfig`: UTF-8, 2-space indentation, trailing whitespace trimmed, final newline required. Use single quotes in TypeScript. Keep Angular naming conventional: `feature-name.component.ts`, `*.service.ts`, `*.routes.ts`. Prefer standalone components and keep domain types in `src/app/core/models/` with mapping logic in `src/app/core/mappers/`. Match existing UI text style: most user-facing strings are in Spanish.
+## Commands
+- `pnpm install`: install dependencies.
+- `pnpm start`: run the dev server on `http://localhost:4200/`.
+- `pnpm run build`: create the production build in `dist/angular-example/`.
+- `pnpm run watch`: rebuild continuously in development mode.
+- `pnpm test`: run Karma in watch mode.
+- `pnpm run test:headless`: run Karma once with `ChromeHeadlessCI`.
+- `pnpm run browser:install`: install a local Chrome binary for headless tests.
 
-## Testing Guidelines
-Unit tests use Jasmine with Karma. Place specs next to the code they cover as `*.spec.ts`. Current coverage is minimal, so add tests when changing component behavior, routing, or API mapping logic. At minimum, run `npm test` for behavior changes and `npm run build` before opening a PR.
+## Editing Conventions
+- Follow `.editorconfig`: UTF-8, 2-space indentation, trim trailing whitespace, final newline.
+- Use single quotes in TypeScript.
+- Keep Angular naming conventional: `feature-name.component.ts`, `*.service.ts`, `*.routes.ts`.
+- Prefer standalone components.
+- Keep domain models in `src/app/core/models/` and mapping logic in `src/app/core/mappers/`.
+- Preserve Spanish for user-facing UI copy unless the surrounding screen is already in another language.
 
-## Commit & Pull Request Guidelines
-Use short-lived branches and do not commit directly to `main`. Branch names should follow the documented pattern, for example `feat/requests-form-validation` or `fix/sidebar-navigation-toggle`. Recent history follows Conventional Commits such as `feat: integra CRUDs con capa API` and `fix: improve create form error handling`; keep subjects imperative and under about 72 characters.
+## Validation
+- Add or update `*.spec.ts` when changing component behavior, routing, auth, API mapping, or guards.
+- Minimum validation for functional changes: `pnpm run test:headless` and `pnpm run build`.
+- If a command cannot be run locally, state that explicitly in the handoff.
 
-PRs should describe the user-visible change, note any contract changes with `../chillsage-backend`, and list the validations run. Include screenshots for UI changes and update `README.md` or `docs/` when architecture, workflow, or setup changes.
+## Git and PRs
+- Do not commit directly to `main`.
+- Use short-lived branches such as `feat/requests-form-validation` or `fix/sidebar-navigation-toggle`.
+- Follow Conventional Commits with concise imperative subjects.
+- PRs should describe the visible change, mention backend contract changes in `../chillsage-backend`, list validations run, and include screenshots for UI changes.
 
-## Backend Contract Notes
-When backend payloads change, update the frontend in the same work item: `src/app/core/models/domain.models.ts`, `src/app/core/mappers/domain.mappers.ts`, the affected `*.service.ts`, and related create/edit/detail/list screens.
+## Backend Contract
+When backend payloads or endpoints change, update the frontend in the same work item:
+
+- `src/app/core/models/domain.models.ts`
+- `src/app/core/mappers/domain.mappers.ts`
+- the affected files in `src/app/core/api/` and `src/app/core/auth/`
+- related `list`, `detail`, `create`, and `edit` screens
